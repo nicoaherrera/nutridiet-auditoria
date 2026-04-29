@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditoría Digital — NutriDiet Market</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --verde: #2d7a4f;
+    --verde-claro: #e8f5ee;
+    --verde-medio: #4caf50;
+    --rojo: #c0392b;
+    --rojo-claro: #fdecea;
+    --naranja: #e67e22;
+    --naranja-claro: #fef5e7;
+    --amarillo-claro: #fffde7;
+    --gris: #6b7280;
+    --gris-claro: #f3f4f6;
+    --gris-borde: #e5e7eb;
+    --texto: #1a202c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--texto);
+    background: #fff;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 48px;
+  }
+
+  /* PORTADA */
+  .portada {
+    background: linear-gradient(135deg, var(--verde) 0%, #1a5c37 100%);
+    color: white;
+    padding: 60px 48px 50px;
+    border-radius: 0 0 24px 24px;
+    margin-bottom: 48px;
+  }
+  .portada .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.95);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .portada h1 {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .portada .negocio {
+    font-size: 18px;
+    opacity: 0.85;
+    margin-bottom: 32px;
+  }
+  .portada .meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 24px;
+  }
+  .portada .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .portada .meta-item .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.65;
+    font-weight: 600;
+  }
+  .portada .meta-item .value {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.95;
+  }
+
+  /* RESUMEN EJECUTIVO */
+  .resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .resumen-card {
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .resumen-card .emoji { font-size: 24px; margin-bottom: 8px; display: block; }
+  .resumen-card .titulo { font-size: 11px; color: var(--gris); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .resumen-card .estado { font-size: 13px; font-weight: 700; }
+  .estado-roto { color: var(--rojo); }
+  .estado-bueno { color: var(--verde); }
+  .estado-regular { color: var(--naranja); }
+
+  /* SECCIONES */
+  h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--verde);
+    margin-bottom: 6px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--verde-claro);
+  }
+  h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--texto);
+    margin: 20px 0 8px;
+  }
+  .seccion {
+    margin-bottom: 40px;
+  }
+  .seccion-intro {
+    font-size: 13px;
+    color: var(--gris);
+    margin-bottom: 16px;
+  }
+
+  /* PROBLEMAS */
+  .problema {
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .problema-critico {
+    background: var(--rojo-claro);
+    border-left: 4px solid var(--rojo);
+  }
+  .problema-importante {
+    background: var(--naranja-claro);
+    border-left: 4px solid var(--naranja);
+  }
+  .problema-menor {
+    background: var(--amarillo-claro);
+    border-left: 4px solid #f59e0b;
+  }
+  .problema .badge-nivel {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .badge-critico { background: var(--rojo); color: white; }
+  .badge-importante { background: var(--naranja); color: white; }
+  .badge-menor { background: #f59e0b; color: white; }
+  .problema .contenido .titulo {
+    font-weight: 700;
+    font-size: 13.5px;
+    margin-bottom: 3px;
+  }
+  .problema .contenido .desc {
+    font-size: 12.5px;
+    color: #374151;
+    line-height: 1.5;
+  }
+
+  /* TABLA */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0 20px;
+  }
+  th {
+    background: var(--verde-claro);
+    color: var(--verde);
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--gris-borde);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  /* EMBUDO */
+  .embudo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 16px 0 24px;
+  }
+  .embudo-paso {
+    background: var(--verde-claro);
+    border: 1px solid #a7d7b8;
+    border-radius: 8px;
+    padding: 10px 20px;
+    width: 75%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--verde);
+    position: relative;
+  }
+  .embudo-paso.roto {
+    background: var(--rojo-claro);
+    border-color: #f5a59a;
+    color: var(--rojo);
+  }
+  .embudo-flecha {
+    font-size: 18px;
+    color: var(--gris);
+    line-height: 1;
+    padding: 2px 0;
+  }
+  .embudo-flecha.rojo { color: var(--rojo); }
+
+  /* PASOS DE ACCIÓN */
+  .paso-accion {
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .paso-numero {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--verde);
+    color: white;
+    font-size: 18px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .paso-cuerpo .plazo {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--verde);
+    margin-bottom: 4px;
+  }
+  .paso-cuerpo h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .paso-cuerpo p {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.6;
+  }
+
+  /* OPORTUNIDADES */
+  .oportunidad {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 16px;
+    background: var(--verde-claro);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+  .oportunidad .icono { font-size: 18px; flex-shrink: 0; }
+  .oportunidad strong { font-weight: 700; }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gris-borde);
+    text-align: center;
+    font-size: 11px;
+    color: var(--gris);
+  }
+
+  /* PRINT */
+  @media print {
+    body { font-size: 12px; }
+    .portada { border-radius: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .problema, .paso-accion, .oportunidad, th, .resumen-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { padding: 24px 32px; }
+    h2 { page-break-after: avoid; }
+    .seccion { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<div class="portada">
+  <div class="badge">Auditoría Digital Completa</div>
+  <h1>NutriDiet Market</h1>
+  <div class="negocio">Diagnóstico de presencia digital, ventas online y oportunidades de mejora</div>
+  <div class="meta">
+    <div class="meta-item">
+      <span class="label">Web auditada</span>
+      <span class="value">nutridietmarket.com.ar</span>
+    </div>
+    <div class="meta-item">
+      <span class="label">Instagram</span>
+      <span class="value">@nutridietlp — 95.000 seguidores</span>
+    </div>
+    <div class="meta-item">
+      <span class="label">Categoría</span>
+      <span class="value">Dietética · Cosmética · Bazar · La Plata</span>
+    </div>
+    <div class="meta-item">
+      <span class="label">Fecha</span>
+      <span class="value">29 de abril de 2026</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- RESUMEN EJECUTIVO -->
+  <div class="seccion">
+    <h2>Diagnóstico Rápido</h2>
+    <p class="seccion-intro">Estado de cada canal digital del negocio al momento de la auditoría.</p>
+    <div class="resumen-grid">
+      <div class="resumen-card">
+        <span class="emoji">📱</span>
+        <div class="titulo">Instagram</div>
+        <div class="estado estado-bueno">Muy bueno</div>
+        <div style="font-size:11px;color:var(--gris);margin-top:4px">95K seguidores activos</div>
+      </div>
+      <div class="resumen-card">
+        <span class="emoji">🌐</span>
+        <div class="titulo">Tienda Online</div>
+        <div class="estado estado-roto">Rota</div>
+        <div style="font-size:11px;color:var(--gris);margin-top:4px">Catálogo con 0 productos</div>
+      </div>
+      <div class="resumen-card">
+        <span class="emoji">🔀</span>
+        <div class="titulo">Embudo de ventas</div>
+        <div class="estado estado-roto">Cortado</div>
+        <div style="font-size:11px;color:var(--gris);margin-top:4px">Se rompe en la web</div>
+      </div>
+      <div class="resumen-card">
+        <span class="emoji">⭐</span>
+        <div class="titulo">Reputación</div>
+        <div class="estado estado-bueno">Excelente</div>
+        <div style="font-size:11px;color:var(--gris);margin-top:4px">4.5★ con 360+ reseñas</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEMAS CRÍTICOS -->
+  <div class="seccion">
+    <h2>Problemas Detectados</h2>
+    <p class="seccion-intro">Clasificados por impacto en las ventas. Los críticos bloquean ventas directamente.</p>
+
+    <h3>Críticos — bloquean ventas directamente</h3>
+
+    <div class="problema problema-critico">
+      <span class="badge-nivel badge-critico">Crítico</span>
+      <div class="contenido">
+        <div class="titulo">C1 — Catálogo completamente vacío en la tienda online</div>
+        <div class="desc">Las páginas /productos y /cosmetica devuelven "0 Productos encontrados". El carrito existe pero no hay nada que comprar. Todo el tráfico que llega a la web no puede convertirse en ninguna venta. Es el problema más urgente de toda la auditoría.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-critico">
+      <span class="badge-nivel badge-critico">Crítico</span>
+      <div class="contenido">
+        <div class="titulo">C2 — Sin propuesta de valor clara en la homepage</div>
+        <div class="desc">No hay un título (H1) visible que explique qué vende el negocio. Los 4 pilares de la homepage ("Envíos a todo el país", "Sitio seguro", etc.) son beneficios operativos genéricos. Un visitante nuevo no sabe en 5 segundos qué es NutriDiet ni por qué elegirte.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-critico">
+      <span class="badge-nivel badge-critico">Crítico</span>
+      <div class="contenido">
+        <div class="titulo">C3 — Sin precios visibles en ningún canal digital</div>
+        <div class="desc">Sin precios online, el cliente no puede comparar ni tomar una decisión de compra. La fricción es máxima. Incluso si el catálogo estuviera cargado, sin precios claros la conversión sería muy baja.</div>
+      </div>
+    </div>
+
+    <h3>Importantes — afectan la experiencia y la conversión</h3>
+
+    <div class="problema problema-importante">
+      <span class="badge-nivel badge-importante">Importante</span>
+      <div class="contenido">
+        <div class="titulo">I1 — WhatsApp oculto (enterrado en Preguntas Frecuentes)</div>
+        <div class="desc">El número +54 9 221 699-3344 solo aparece en la sección FAQ. No hay botón de WhatsApp en la homepage ni en la página de contacto. En Argentina, WhatsApp es el canal de conversión #1 para negocios locales.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-importante">
+      <span class="badge-nivel badge-importante">Importante</span>
+      <div class="contenido">
+        <div class="titulo">I2 — Dos emails distintos en la misma web</div>
+        <div class="desc">info@nuthome.com.ar aparece en el footer y info@nutridietlp.com.ar en la política de devoluciones. Genera desconfianza y confusión en el cliente.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-importante">
+      <span class="badge-nivel badge-importante">Importante</span>
+      <div class="contenido">
+        <div class="titulo">I3 — Sin blog ni contenido: la web es invisible en Google</div>
+        <div class="desc">Google indexa solo 3 páginas del sitio. Sin contenido, no hay SEO orgánico. La web no aparece para búsquedas como "comprar granola sin azúcar La Plata" o "proteína vegana online Argentina".</div>
+      </div>
+    </div>
+
+    <div class="problema problema-importante">
+      <span class="badge-nivel badge-importante">Importante</span>
+      <div class="contenido">
+        <div class="titulo">I4 — 360 reseñas de 4.5★ que nadie ve en la web</div>
+        <div class="desc">Todo el capital de reputación ganado en Google Maps no está capitalizado en la tienda online. Los visitantes nuevos no tienen ningún motivo de confianza al entrar a la web.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-importante">
+      <span class="badge-nivel badge-importante">Importante</span>
+      <div class="contenido">
+        <div class="titulo">I5 — Fragmentación de marca: 4 nombres distintos en circulación</div>
+        <div class="desc">@nutridietlp, @nutridietmarket, "NutriDiet Market" y "NutHome" conviven sin jerarquía clara. Esto fragmenta el reconocimiento de marca y confunde a quienes llegan desde distintos canales.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-importante">
+      <span class="badge-nivel badge-importante">Importante</span>
+      <div class="contenido">
+        <div class="titulo">I6 — Sin cuotas sin interés</div>
+        <div class="desc">Los medios de pago aceptados (transferencia, depósito, Mercado Pago, Nave) no incluyen cuotas. En Argentina 2026, no tener financiación es una barrera de compra real frente a los competidores.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-importante">
+      <span class="badge-nivel badge-importante">Importante</span>
+      <div class="contenido">
+        <div class="titulo">I7 — Sin categorías en el menú de navegación</div>
+        <div class="desc">Solo existe "Productos" como enlace único. No hay acceso directo a Alimentos / Suplementos / Cosmética / Bazar (NutHome). El visitante no puede explorar el catálogo por área de interés.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-importante">
+      <span class="badge-nivel badge-importante">Importante</span>
+      <div class="contenido">
+        <div class="titulo">I8 — Sin pixel de Meta ni seguimiento activo</div>
+        <div class="desc">No se detectó pixel de Meta en el HTML analizado. Sin tracking, no es posible hacer retargeting de visitantes ni medir el impacto de las publicaciones de Instagram en visitas a la tienda.</div>
+      </div>
+    </div>
+
+    <h3>Menores — mejoras de experiencia</h3>
+
+    <div class="problema problema-menor">
+      <span class="badge-nivel badge-menor">Menor</span>
+      <div class="contenido">
+        <div class="titulo">M1 — Checkout de 8 pasos (debería ser 3-4)</div>
+        <div class="desc">El proceso de compra documentado en el FAQ tiene 8 pasos. Los ecommerce modernos optimizan a 3-4 pasos para reducir el abandono de carrito.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-menor">
+      <span class="badge-nivel badge-menor">Menor</span>
+      <div class="contenido">
+        <div class="titulo">M2 — Sin captación de leads (newsletter / email)</div>
+        <div class="desc">No hay formulario de suscripción. Los visitantes que llegan y no compran se pierden sin posibilidad de recuperarlos por email marketing.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-menor">
+      <span class="badge-nivel badge-menor">Menor</span>
+      <div class="contenido">
+        <div class="titulo">M3 — Sin feed de Instagram integrado en la web</div>
+        <div class="desc">Con 95K seguidores y contenido activo, mostrar las últimas publicaciones en la web daría vida al sitio y aportaría social proof visual inmediato.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-menor">
+      <span class="badge-nivel badge-menor">Menor</span>
+      <div class="contenido">
+        <div class="titulo">M4 — Sección "NutHome / Bazar" invisible en la web</div>
+        <div class="desc">El bazar decorativo es un diferenciador único (ningún competidor combina dietética + bazar sustentable) pero no tiene sección propia ni aparece en el menú.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-menor">
+      <span class="badge-nivel badge-menor">Menor</span>
+      <div class="contenido">
+        <div class="titulo">M5 — Sin presencia en Mercado Libre Argentina</div>
+        <div class="desc">Los competidores y clientes buscan productos saludables en ML. No tener presencia ahí es dejar un canal de ventas sin explotar que no requiere construir audiencia propia.</div>
+      </div>
+    </div>
+
+    <div class="problema problema-menor">
+      <span class="badge-nivel badge-menor">Menor</span>
+      <div class="contenido">
+        <div class="titulo">M6 — El carrito caduca en 12 horas</div>
+        <div class="desc">Plazo muy corto que genera abandono. 24-48 horas sería más razonable para clientes que quieren tomarse su tiempo antes de confirmar la compra.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMBUDO DE VENTAS -->
+  <div class="seccion">
+    <h2>Embudo de Ventas Actual</h2>
+    <p class="seccion-intro">Así es el recorrido real de un cliente hoy, y dónde se rompe.</p>
+    <div class="embudo">
+      <div class="embudo-paso">Cliente descubre el negocio en Instagram o Google Maps</div>
+      <div class="embudo-flecha">↓</div>
+      <div class="embudo-paso">Va a la web para comprar online</div>
+      <div class="embudo-flecha rojo">↓</div>
+      <div class="embudo-paso roto">⚠️ Encuentra catálogo vacío → ABANDONA ← AQUÍ SE ROMPE TODO</div>
+      <div class="embudo-flecha" style="color:#999">↓ (si el cliente es muy persistente)</div>
+      <div class="embudo-paso" style="background:#f3f4f6;border-color:#d1d5db;color:#6b7280">Busca WhatsApp enterrado en FAQ → Va al local físico</div>
+    </div>
+  </div>
+
+  <!-- INSTAGRAM -->
+  <div class="seccion">
+    <h2>Instagram @nutridietlp — Lo que funciona bien</h2>
+    <table>
+      <tr><th>Indicador</th><th>Dato</th><th>Evaluación</th></tr>
+      <tr><td>Seguidores</td><td>95.000</td><td>Excelente para una dietética local</td></tr>
+      <tr><td>Publicaciones</td><td>1.272</td><td>Cuenta consolidada</td></tr>
+      <tr><td>Estado de la cuenta</td><td>Activa (abril 2026)</td><td>Contenido reciente y relevante</td></tr>
+      <tr><td>Canales adicionales</td><td>TikTok (@nutridietmarket) + Grupo WhatsApp</td><td>Buena distribución multicanal</td></tr>
+      <tr><td>Contenido</td><td>Helados proteicos, Supergreens, tips de salud, temporada</td><td>Coherente con el negocio</td></tr>
+      <tr><td>Conversión desde Instagram</td><td>Link en bio → web sin productos</td><td>El tráfico se pierde en la web</td></tr>
+    </table>
+  </div>
+
+  <!-- COMPETENCIA -->
+  <div class="seccion">
+    <h2>¿Qué hacen mejor tus competidores?</h2>
+    <table>
+      <tr><th>Competidor</th><th>Ventaja clave</th></tr>
+      <tr>
+        <td><strong>Natureba</strong><br><span style="font-size:11px;color:var(--gris)">natureba.com.ar</span></td>
+        <td>Catálogo completo con precios, filtros por atributo dietario (vegano, sin TACC, orgánico), consulta con nutricionista incluida, entrega en el día</td>
+      </tr>
+      <tr>
+        <td><strong>Positiva Market</strong><br><span style="font-size:11px;color:var(--gris)">positivamarket.com.ar</span></td>
+        <td>Envío gratis el mismo día, descuentos visibles con precio tachado, WhatsApp integrado en la tienda, calculadora de envío por código postal</td>
+      </tr>
+      <tr>
+        <td><strong>Celinda</strong><br><span style="font-size:11px;color:var(--gris)">celinda.com.ar</span></td>
+        <td>Especialización y certificación clara de categorías dietarias (sin TACC, keto, plant-based, raw), canal mayorista activo</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- OPORTUNIDADES -->
+  <div class="seccion">
+    <h2>Oportunidades de Mejora</h2>
+
+    <div class="oportunidad">
+      <span class="icono">🚀</span>
+      <div><strong>95K seguidores sin monetizar online.</strong> Si la tienda tuviera productos cargados, el link en bio podría convertir directamente. Incluso una tasa de conversión del 0,5% serían ventas diarias.</div>
+    </div>
+
+    <div class="oportunidad">
+      <span class="icono">🏆</span>
+      <div><strong>NutHome / Bazar decorativo es único en La Plata.</strong> Ningún competidor detectado combina dietética + cosmética + decoración sustentable. Ese diferenciador debería ser el centro de la propuesta de valor digital.</div>
+    </div>
+
+    <div class="oportunidad">
+      <span class="icono">💬</span>
+      <div><strong>El grupo de WhatsApp de fans es un canal de ventas dormido.</strong> Con comunicación estructurada (catálogo, novedades, ofertas exclusivas para miembros), puede ser el canal de mayor conversión del negocio.</div>
+    </div>
+
+    <div class="oportunidad">
+      <span class="icono">⭐</span>
+      <div><strong>360 reseñas de 4.5★ que nadie ve en la web.</strong> Integrar los testimonios en la homepage generaría confianza inmediata en compradores nuevos sin ningún costo adicional.</div>
+    </div>
+
+    <div class="oportunidad">
+      <span class="icono">📝</span>
+      <div><strong>Contenido educativo = SEO gratuito.</strong> El rubro de alimentación saludable tiene miles de búsquedas mensuales. Con un blog básico, la web captaría tráfico orgánico sin pagar publicidad.</div>
+    </div>
+
+    <div class="oportunidad">
+      <span class="icono">🛒</span>
+      <div><strong>Mercado Libre Argentina.</strong> Canal de ventas adicional que no requiere construir audiencia propia. Los clientes que buscan "granola sin azúcar" o "proteína vegana" en ML encontrarían el negocio directamente.</div>
+    </div>
+  </div>
+
+  <!-- PLAN DE ACCIÓN -->
+  <div class="seccion">
+    <h2>Plan de Acción — 3 Primeros Pasos</h2>
+
+    <div class="paso-accion">
+      <div class="paso-numero">1</div>
+      <div class="paso-cuerpo">
+        <div class="plazo">Esta semana — máximo impacto</div>
+        <h4>Cargar productos en la tienda online</h4>
+        <p>Sin esto, todo lo demás es irrelevante. Empezá con 20-30 productos clave: los más vendidos del local y los que más aparecen en Instagram. Foto real, descripción corta y precio actualizado. Los primeros en subir: los más mencionados en las últimas publicaciones de Instagram (helados proteicos, Supergreens, granolas). Esta es la acción de mayor retorno inmediato de toda la auditoría.</p>
+      </div>
+    </div>
+
+    <div class="paso-accion">
+      <div class="paso-numero">2</div>
+      <div class="paso-cuerpo">
+        <div class="plazo">Esta semana — alta conversión</div>
+        <h4>Poner el botón de WhatsApp visible en todas las páginas</h4>
+        <p>El número +54 9 221 699-3344 existe pero está oculto. Hay que agregar un botón flotante de WhatsApp visible en todas las páginas con un mensaje predefinido ("Hola, quiero consultar sobre productos"). En Argentina, WhatsApp es el canal de conversión #1 para negocios locales. Muchos clientes que no compran online sí escriben por WhatsApp si el botón está a la vista.</p>
+      </div>
+    </div>
+
+    <div class="paso-accion">
+      <div class="paso-numero">3</div>
+      <div class="paso-cuerpo">
+        <div class="plazo">Próximas 2 semanas — credibilidad</div>
+        <h4>Reescribir la homepage con propuesta de valor clara y reseñas</h4>
+        <p>Necesitás un H1 que diga algo como: "Tu supermercado natural en La Plata. Alimentos saludables, suplementos, cosmética y bazar. Enviamos a todo el país." Debajo, cuatro categorías clickeables (Alimentos / Suplementos / Cosmética / NutHome) y al final 5-6 reseñas reales de Google Maps con nombre y calificación. Este cambio puede realizarse en menos de un día y puede duplicar la tasa de conversión.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Auditoría generada el 29 de abril de 2026 · NutriDiet Market · nutridietmarket.com.ar · @nutridietlp</p>
+    <p style="margin-top:4px">Análisis basado en acceso directo a la web, redes sociales y plataformas de reseñas al momento de la auditoría.</p>
+  </div>
+
+</div>
+</body>
+</html>

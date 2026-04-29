@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp Business Automatizado — NutriDiet Market</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --verde-wa: #25D366;
+    --verde-wa-dark: #128C7E;
+    --verde-wa-oscuro: #075E54;
+    --verde: #2d7a4f;
+    --verde-claro: #e8f5ee;
+    --azul: #2563eb;
+    --azul-claro: #eff6ff;
+    --rojo: #dc2626;
+    --rojo-claro: #fef2f2;
+    --naranja: #ea580c;
+    --naranja-claro: #fff7ed;
+    --amarillo-claro: #fefce8;
+    --gris: #6b7280;
+    --gris-claro: #f9fafb;
+    --gris-borde: #e5e7eb;
+    --texto: #111827;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--texto);
+    background: #fff;
+  }
+
+  .page { max-width: 920px; margin: 0 auto; padding: 40px 48px; }
+
+  /* PORTADA */
+  .portada {
+    background: linear-gradient(135deg, var(--verde-wa-oscuro) 0%, var(--verde-wa-dark) 60%, var(--verde-wa) 100%);
+    color: white;
+    padding: 56px 48px 48px;
+    border-radius: 0 0 24px 24px;
+    margin-bottom: 48px;
+  }
+  .portada .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.95);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+  .portada h1 { font-size: 34px; font-weight: 800; line-height: 1.2; margin-bottom: 10px; }
+  .portada .sub { font-size: 16px; opacity: 0.85; margin-bottom: 32px; max-width: 560px; line-height: 1.5; }
+  .portada .fases {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .portada .fase-chip {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .portada .fase-chip .num { font-size: 18px; font-weight: 800; display: block; line-height: 1.2; }
+
+  /* VISION GENERAL */
+  .vision-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .vision-card {
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .vision-card .icono { font-size: 28px; margin-bottom: 8px; display: block; }
+  .vision-card .titulo { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gris); margin-bottom: 4px; }
+  .vision-card .valor { font-size: 22px; font-weight: 800; color: var(--verde-wa-dark); }
+  .vision-card .detalle { font-size: 12px; color: var(--gris); margin-top: 3px; }
+
+  /* HEADINGS */
+  h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--verde-wa-oscuro);
+    margin-bottom: 6px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #dcfce7;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  h3 { font-size: 14px; font-weight: 700; margin: 20px 0 10px; color: var(--texto); }
+  h4 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+
+  .seccion { margin-bottom: 44px; }
+  .seccion-intro { font-size: 13px; color: var(--gris); margin-bottom: 18px; line-height: 1.6; }
+
+  /* FASE HEADER */
+  .fase-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--verde-claro);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .fase-header .numero {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--verde-wa-dark);
+    color: white;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .fase-header .info .titulo { font-size: 16px; font-weight: 800; color: var(--verde-wa-oscuro); }
+  .fase-header .info .sub { font-size: 12px; color: var(--verde); font-weight: 500; }
+  .fase-header .costo {
+    margin-left: auto;
+    background: var(--verde-wa-dark);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* PASOS */
+  .paso {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 10px;
+    background: white;
+  }
+  .paso .num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--verde-wa-dark);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .paso .contenido p { font-size: 13px; color: #374151; line-height: 1.6; }
+  .paso .contenido strong { color: var(--texto); }
+
+  /* MENSAJES DE WHATSAPP (simulación) */
+  .wa-preview {
+    background: #e5ddd5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' opacity='0.05'%3E%3Ctext x='50%25' y='50%25' font-size='60' text-anchor='middle'%3E💬%3C/text%3E%3C/svg%3E");
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .wa-msg {
+    max-width: 80%;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    position: relative;
+    clear: both;
+  }
+  .wa-msg.bot {
+    background: white;
+    border-radius: 0 8px 8px 8px;
+    float: left;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+  }
+  .wa-msg.user {
+    background: #dcf8c6;
+    border-radius: 8px 0 8px 8px;
+    float: right;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+  }
+  .wa-msg .hora {
+    font-size: 10px;
+    color: rgba(0,0,0,0.4);
+    text-align: right;
+    margin-top: 2px;
+  }
+  .wa-msg .nombre-bot {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--verde-wa-dark);
+    margin-bottom: 3px;
+  }
+  .clearfix::after { content: ''; display: table; clear: both; }
+
+  /* RESPUESTAS RAPIDAS */
+  .respuesta-rapida {
+    background: var(--gris-claro);
+    border: 1px solid var(--gris-borde);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .respuesta-rapida .atajo {
+    display: inline-block;
+    background: var(--verde-wa-dark);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    font-family: monospace;
+  }
+  .respuesta-rapida .texto { font-size: 13px; color: #374151; }
+
+  /* TABLA */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--gris-borde);
+  }
+  th {
+    background: var(--verde-wa-oscuro);
+    color: white;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--gris-borde); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--gris-claro); }
+
+  /* ALERTA / TIP */
+  .tip {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin: 12px 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .tip.verde { background: var(--verde-claro); border-left: 4px solid var(--verde); }
+  .tip.azul { background: var(--azul-claro); border-left: 4px solid var(--azul); }
+  .tip.naranja { background: var(--naranja-claro); border-left: 4px solid var(--naranja); }
+  .tip.rojo { background: var(--rojo-claro); border-left: 4px solid var(--rojo); }
+  .tip .icono { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  /* HERRAMIENTAS */
+  .herramienta {
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .herramienta .header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .herramienta .nombre { font-size: 16px; font-weight: 800; }
+  .herramienta .precio-badge {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .badge-gratis { background: #dcfce7; color: #166534; }
+  .badge-pago { background: #eff6ff; color: #1d4ed8; }
+  .badge-recomendado { background: #fef9c3; color: #854d0e; }
+  .herramienta .desc { font-size: 13px; color: #374151; margin-bottom: 10px; line-height: 1.6; }
+  .herramienta .pros { display: flex; flex-wrap: wrap; gap: 6px; }
+  .herramienta .pro {
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--verde-claro);
+    color: var(--verde);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  /* FLUJO AUTOMATIZADO */
+  .flujo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 16px 0 24px;
+  }
+  .flujo-paso {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    border: 1px solid var(--gris-borde);
+    border-radius: 10px;
+    padding: 12px 18px;
+    width: 85%;
+    font-size: 13px;
+  }
+  .flujo-paso .icono-paso { font-size: 20px; flex-shrink: 0; }
+  .flujo-paso .texto-paso strong { display: block; font-weight: 700; font-size: 13px; }
+  .flujo-paso .texto-paso span { font-size: 12px; color: var(--gris); }
+  .flujo-paso.automatico { background: var(--verde-claro); border-color: #a7d7b8; }
+  .flujo-paso.manual { background: var(--azul-claro); border-color: #bfdbfe; }
+  .flujo-flecha { color: var(--gris); font-size: 16px; line-height: 1; padding: 2px 0; }
+  .flujo-leyenda {
+    display: flex;
+    gap: 20px;
+    margin-top: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .flujo-leyenda .item { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-verde { background: var(--verde); }
+  .dot-azul { background: var(--azul); }
+
+  /* ETIQUETAS */
+  .etiquetas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .etiqueta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--gris-borde);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .etiqueta .punto { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; padding: 0; margin: 8px 0 16px; }
+  .checklist li {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--gris-borde);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist .check { color: var(--verde-wa-dark); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gris-borde);
+    text-align: center;
+    font-size: 11px;
+    color: var(--gris);
+  }
+
+  @media print {
+    body { font-size: 12px; }
+    .portada { -webkit-print-color-adjust: exact; print-color-adjust: exact; border-radius: 0; }
+    .wa-preview, .tip, .fase-header, th, .herramienta, .flujo-paso, .etiqueta { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { padding: 24px 32px; }
+    h2 { page-break-after: avoid; }
+    .seccion { page-break-inside: avoid; }
+    .wa-preview { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<div class="portada">
+  <div class="badge">📱 Guía Completa</div>
+  <h1>WhatsApp Business Automatizado</h1>
+  <div class="sub">Catálogo de productos, bot de respuestas automáticas y sistema de pedidos para NutriDiet Market. El empleado solo recibe los pedidos confirmados y los prepara.</div>
+  <div class="fases">
+    <div class="fase-chip"><span class="num">Fase 1</span>App gratuita · 2 horas</div>
+    <div class="fase-chip"><span class="num">Fase 2</span>Bot automático · desde $15/mes</div>
+    <div class="fase-chip"><span class="num">Fase 3</span>Integración con Instagram</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- VISION -->
+  <div class="seccion">
+    <h2>🎯 El objetivo final</h2>
+    <p class="seccion-intro">Un sistema donde el cliente hace todo el proceso solo y el empleado solo toca el pedido cuando está listo para preparar.</p>
+    <div class="vision-grid">
+      <div class="vision-card">
+        <span class="icono">🤖</span>
+        <div class="titulo">Bot responde</div>
+        <div class="valor">24/7</div>
+        <div class="detalle">Sin intervención humana</div>
+      </div>
+      <div class="vision-card">
+        <span class="icono">📦</span>
+        <div class="titulo">Empleado ve</div>
+        <div class="valor">Solo pedidos</div>
+        <div class="detalle">Listos para preparar</div>
+      </div>
+      <div class="vision-card">
+        <span class="icono">⏱️</span>
+        <div class="titulo">Tiempo del empleado</div>
+        <div class="valor">-80%</div>
+        <div class="detalle">En atención al cliente</div>
+      </div>
+    </div>
+
+    <!-- FLUJO COMPLETO -->
+    <h3>Cómo funciona el flujo completo</h3>
+    <div class="flujo">
+      <div class="flujo-paso automatico">
+        <span class="icono-paso">📱</span>
+        <div class="texto-paso">
+          <strong>Cliente escribe por WhatsApp (desde bio de Instagram o Google Maps)</strong>
+          <span>El bot responde en segundos, a cualquier hora</span>
+        </div>
+      </div>
+      <div class="flujo-flecha">↓</div>
+      <div class="flujo-paso automatico">
+        <span class="icono-paso">🤖</span>
+        <div class="texto-paso">
+          <strong>Bot muestra el menú de opciones</strong>
+          <span>Automático: Ver catálogo / Hacer pedido / Consultar envío / Horarios</span>
+        </div>
+      </div>
+      <div class="flujo-flecha">↓</div>
+      <div class="flujo-paso automatico">
+        <span class="icono-paso">🛒</span>
+        <div class="texto-paso">
+          <strong>Cliente elige productos y confirma el pedido</strong>
+          <span>Automático: el bot guía el proceso paso a paso</span>
+        </div>
+      </div>
+      <div class="flujo-flecha">↓</div>
+      <div class="flujo-paso automatico">
+        <span class="icono-paso">💳</span>
+        <div class="texto-paso">
+          <strong>Bot solicita nombre, dirección y forma de pago</strong>
+          <span>Automático: recoge todos los datos necesarios</span>
+        </div>
+      </div>
+      <div class="flujo-flecha">↓</div>
+      <div class="flujo-paso manual">
+        <span class="icono-paso">👤</span>
+        <div class="texto-paso">
+          <strong>Empleado recibe el pedido completo y confirmado</strong>
+          <span>MANUAL: lo prepara y lo despacha</span>
+        </div>
+      </div>
+      <div class="flujo-flecha">↓</div>
+      <div class="flujo-paso automatico">
+        <span class="icono-paso">📨</span>
+        <div class="texto-paso">
+          <strong>Bot envía confirmación y número de seguimiento al cliente</strong>
+          <span>Automático: el cliente queda informado sin intervención</span>
+        </div>
+      </div>
+    </div>
+    <div class="flujo-leyenda">
+      <div class="item"><div class="dot dot-verde"></div> Verde = hace el bot solo</div>
+      <div class="item"><div class="dot dot-azul"></div> Azul = intervención del empleado</div>
+    </div>
+  </div>
+
+  <!-- FASE 1 -->
+  <div class="seccion">
+    <div class="fase-header">
+      <div class="numero">1</div>
+      <div class="info">
+        <div class="titulo">WhatsApp Business App — Configuración base</div>
+        <div class="sub">Gratis · 2 horas de configuración · Funciona desde el celular</div>
+      </div>
+      <div class="costo">GRATIS</div>
+    </div>
+
+    <div class="tip azul">
+      <span class="icono">ℹ️</span>
+      <div><strong>Importante:</strong> Si el número actual del negocio (+54 9 221 699-3344) ya está en WhatsApp normal, hay que convertirlo a WhatsApp Business. No se pierden los chats anteriores. Se puede tener la app Business y la normal en el mismo teléfono si son números distintos.</div>
+    </div>
+
+    <h3>Paso 1 — Instalar y configurar el perfil del negocio</h3>
+    <div class="paso">
+      <div class="num">1</div>
+      <div class="contenido">
+        <p>Descargá <strong>WhatsApp Business</strong> desde la App Store o Google Play (es gratis, es diferente a WhatsApp normal). Al abrirla, verificá el número de teléfono del negocio.</p>
+      </div>
+    </div>
+    <div class="paso">
+      <div class="num">2</div>
+      <div class="contenido">
+        <p>Andá a <strong>Configuración → Perfil de empresa</strong> y completá todos los campos:</p>
+        <ul style="margin-top:8px;margin-left:16px;font-size:13px;color:#374151;line-height:2">
+          <li><strong>Nombre:</strong> NutriDiet Market</li>
+          <li><strong>Categoría:</strong> Alimentación y bebidas</li>
+          <li><strong>Descripción:</strong> "Supermercado natural en La Plata. Alimentos saludables, suplementos, cosmética y bazar. Enviamos a todo el país. 🌿"</li>
+          <li><strong>Dirección:</strong> Av. 7 e/34 y 35 nº 136, La Plata</li>
+          <li><strong>Horarios:</strong> Lunes a viernes 9:00–20:00 / Sábados 10:00–19:00</li>
+          <li><strong>Email:</strong> info@nutridietlp.com.ar</li>
+          <li><strong>Sitio web:</strong> www.nutridietmarket.com.ar</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Paso 2 — Crear el catálogo de productos</h3>
+    <div class="tip verde">
+      <span class="icono">💡</span>
+      <div>El catálogo de WhatsApp es como una tienda dentro del chat. El cliente puede navegar los productos, ver precios y agregarlos al carrito, todo sin salir de WhatsApp.</div>
+    </div>
+    <div class="paso">
+      <div class="num">1</div>
+      <div class="contenido">
+        <p>Andá a <strong>Configuración → Catálogo → Agregar producto</strong>. Para cada producto completás:</p>
+        <ul style="margin-top:8px;margin-left:16px;font-size:13px;color:#374151;line-height:2">
+          <li><strong>Foto:</strong> al menos 1 foto clara (podés usar las de Instagram)</li>
+          <li><strong>Nombre:</strong> ej. "Granola Artesanal Sin Azúcar"</li>
+          <li><strong>Precio:</strong> en ARS (ej. $3.500)</li>
+          <li><strong>Descripción corta:</strong> "200g. Sin azúcar añadida, apta diabéticos. Con avena, frutos secos y coco."</li>
+          <li><strong>Código (opcional):</strong> para tu referencia interna</li>
+        </ul>
+      </div>
+    </div>
+    <div class="paso">
+      <div class="num">2</div>
+      <div class="contenido">
+        <p><strong>Por dónde empezar el catálogo:</strong> Cargá primero los 20-30 productos más vendidos del local. Una buena selección inicial podría ser:</p>
+        <ul style="margin-top:8px;margin-left:16px;font-size:13px;color:#374151;line-height:1.8">
+          <li>5 productos de granolas/cereales</li>
+          <li>5 suplementos más pedidos (proteína, colágeno, vitaminas)</li>
+          <li>5 snacks y frutos secos</li>
+          <li>5 cosméticos naturales</li>
+          <li>5 productos de bazar NutHome más populares</li>
+        </ul>
+      </div>
+    </div>
+    <div class="paso">
+      <div class="num">3</div>
+      <div class="contenido">
+        <p>Una vez creado el catálogo, activá el <strong>botón "Ver catálogo"</strong> que aparece en tu perfil de WhatsApp. Cualquier persona que te escriba lo verá de entrada.</p>
+      </div>
+    </div>
+
+    <h3>Paso 3 — Configurar el mensaje de bienvenida automático</h3>
+    <p style="font-size:13px;color:var(--gris);margin-bottom:10px">Andá a <strong>Herramientas para la empresa → Mensaje de bienvenida</strong>. Activalo y ponés este texto:</p>
+    <div class="wa-preview">
+      <div class="wa-msg bot">
+        <div class="nombre-bot">NutriDiet Market 🌿</div>
+        ¡Hola! 👋 Gracias por escribirnos a *NutriDiet Market*.<br><br>
+        Somos tu supermercado natural en La Plata 🥦<br><br>
+        Para ayudarte mejor, elegí una opción:<br><br>
+        🛒 *1* — Ver catálogo de productos<br>
+        📦 *2* — Hacer un pedido<br>
+        🚚 *3* — Consultar envíos y precios<br>
+        📍 *4* — Horarios y dirección del local<br>
+        💬 *5* — Hablar con una persona<br><br>
+        Respondé con el número de tu elección 😊
+        <div class="hora">✓✓ 10:30</div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+
+    <h3>Paso 4 — Configurar mensaje de ausencia</h3>
+    <p style="font-size:13px;color:var(--gris);margin-bottom:10px">Andá a <strong>Herramientas para la empresa → Mensaje de ausencia</strong>. Configuralo para fuera de horario:</p>
+    <div class="wa-preview">
+      <div class="wa-msg bot">
+        <div class="nombre-bot">NutriDiet Market 🌿</div>
+        ¡Hola! 🌙 Por el momento estamos fuera de horario.<br><br>
+        Nuestros horarios de atención son:<br>
+        📅 Lun a Vie: 9:00 a 20:00<br>
+        📅 Sábados: 10:00 a 19:00<br><br>
+        Tu mensaje quedó registrado y te respondemos a la brevedad 💚<br><br>
+        ¡También podés ver nuestro catálogo ahora mismo! 👇
+        <div class="hora">✓ 23:15</div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+
+    <h3>Paso 5 — Configurar respuestas rápidas</h3>
+    <p style="font-size:13px;color:var(--gris);margin-bottom:12px">Las respuestas rápidas son mensajes prearmados que el empleado dispara con un atajo. Ahorrá el 80% del tiempo de tipeo. Andá a <strong>Herramientas para la empresa → Respuestas rápidas</strong>.</p>
+
+    <div class="respuesta-rapida">
+      <div class="atajo">/envios</div>
+      <div class="texto">📦 *Información de envíos NutriDiet Market*<br><br>Enviamos a todo el país a través de ShipNow 🚚<br>• CABA y GBA: 24-48hs hábiles<br>• Interior: 3-5 días hábiles<br><br>El costo de envío se calcula al momento del pedido según tu código postal. También podés retirar sin cargo en nuestro local (Av. 7 e/34 y 35 nº 136, La Plata).</div>
+    </div>
+
+    <div class="respuesta-rapida">
+      <div class="atajo">/horarios</div>
+      <div class="texto">🕘 *Horarios NutriDiet Market*<br><br>📍 Av. 7 e/34 y 35 nº 136, La Plata<br><br>• Lunes a Viernes: 9:00 a 20:00<br>• Sábados: 10:00 a 19:00<br>• Domingos: cerrado<br><br>Para pedidos online operamos las 24hs con entrega en días hábiles 💚</div>
+    </div>
+
+    <div class="respuesta-rapida">
+      <div class="atajo">/pago</div>
+      <div class="texto">💳 *Medios de pago disponibles*<br><br>✅ Transferencia bancaria / CBU<br>✅ Mercado Pago<br>✅ Nave<br>✅ Depósito bancario<br>✅ Efectivo (retiro en tienda)<br><br>Una vez que confirmés tu pedido te enviamos los datos para el pago 😊</div>
+    </div>
+
+    <div class="respuesta-rapida">
+      <div class="atajo">/pedido</div>
+      <div class="texto">🛒 *Para hacer tu pedido necesito:*<br><br>1️⃣ Nombre y apellido<br>2️⃣ Productos que querés (podés ver el catálogo tocando el ícono 🛍️ arriba)<br>3️⃣ Dirección de entrega (o si retirás en tienda)<br>4️⃣ Forma de pago<br><br>¡Mandame esos datos y te confirmo disponibilidad y total! 💚</div>
+    </div>
+
+    <div class="respuesta-rapida">
+      <div class="atajo">/confirmado</div>
+      <div class="texto">✅ *¡Pedido confirmado!* 🎉<br><br>En breve te informamos el número de seguimiento de tu envío.<br><br>Ante cualquier consulta estamos acá 💚<br>¡Gracias por elegirnos!</div>
+    </div>
+
+    <h3>Paso 6 — Configurar etiquetas para organizar los chats</h3>
+    <p style="font-size:13px;color:var(--gris);margin-bottom:12px">Las etiquetas te permiten ver de un vistazo en qué estado está cada cliente. Andá a <strong>Herramientas para la empresa → Etiquetas</strong> y creá estas:</p>
+    <div class="etiquetas-grid">
+      <div class="etiqueta"><div class="punto" style="background:#ef4444"></div> Nuevo contacto</div>
+      <div class="etiqueta"><div class="punto" style="background:#f97316"></div> Pidió catálogo</div>
+      <div class="etiqueta"><div class="punto" style="background:#eab308"></div> Pedido en curso</div>
+      <div class="etiqueta"><div class="punto" style="background:#3b82f6"></div> Esperando pago</div>
+      <div class="etiqueta"><div class="punto" style="background:#8b5cf6"></div> Pago confirmado</div>
+      <div class="etiqueta"><div class="punto" style="background:#22c55e"></div> Pedido enviado</div>
+    </div>
+    <p style="font-size:12px;color:var(--gris)">El empleado solo tiene que mover los chats entre etiquetas. El panel de etiquetas muestra todos los pedidos en cada estado de un vistazo.</p>
+  </div>
+
+  <!-- FASE 2 -->
+  <div class="seccion">
+    <div class="fase-header">
+      <div class="numero">2</div>
+      <div class="info">
+        <div class="titulo">Bot completo con automatización real</div>
+        <div class="sub">Herramienta externa · desde $15/mes · El bot responde solo, todo el día</div>
+      </div>
+      <div class="costo">~$15–50/mes</div>
+    </div>
+
+    <p class="seccion-intro">La app de WhatsApp Business tiene automatización básica, pero el bot real (que responde con lógica, hace preguntas, guía el pedido completo y no necesita intervención humana) requiere conectar el número a una plataforma externa. Para eso necesitás la <strong>API de WhatsApp Business</strong>, que estas plataformas gestionan por vos.</p>
+
+    <div class="tip naranja">
+      <span class="icono">⚠️</span>
+      <div><strong>Importante:</strong> Al conectar a una plataforma de bot, el número pasa de la app de WhatsApp Business a la API. Ya no podrás usar la app de WhatsApp Business en el teléfono para ese número. Las conversaciones se gestionan desde el panel web de la plataforma. Recomendado tener un número exclusivo para el negocio.</div>
+    </div>
+
+    <h3>Herramientas recomendadas para Argentina</h3>
+
+    <div class="herramienta" style="border-color: #fbbf24; border-width: 2px;">
+      <div class="header">
+        <span style="font-size:24px">⭐</span>
+        <div class="nombre">Wati.io</div>
+        <div class="precio-badge badge-recomendado">RECOMENDADO · desde $49/mes</div>
+      </div>
+      <div class="desc">La opción más completa para un negocio como NutriDiet. Tiene constructor visual de bots (sin código), catálogo integrado, multiagente (varios empleados en el mismo número), CRM básico, y está específicamente pensada para ventas por WhatsApp. Muy popular en Argentina y LATAM.</div>
+      <div class="pros">
+        <span class="pro">Constructor visual de bots</span>
+        <span class="pro">Multiagente</span>
+        <span class="pro">Catálogo integrado</span>
+        <span class="pro">CRM básico</span>
+        <span class="pro">Sin código</span>
+        <span class="pro">Soporte en español</span>
+      </div>
+    </div>
+
+    <div class="herramienta">
+      <div class="header">
+        <span style="font-size:24px">🚀</span>
+        <div class="nombre">Treble.ai</div>
+        <div class="precio-badge badge-pago">desde $30/mes</div>
+      </div>
+      <div class="desc">Muy popular en LATAM, especializada en WhatsApp para e-commerce. Permite crear flujos de conversación complejos, integrar con Shopify o MercadoLibre, y tiene muy buen soporte en español. Ideal si en el futuro querés escalar las ventas.</div>
+      <div class="pros">
+        <span class="pro">Flujos avanzados</span>
+        <span class="pro">Integración e-commerce</span>
+        <span class="pro">LATAM nativa</span>
+        <span class="pro">Buena documentación</span>
+      </div>
+    </div>
+
+    <div class="herramienta">
+      <div class="header">
+        <span style="font-size:24px">💬</span>
+        <div class="nombre">Leadsales</div>
+        <div class="precio-badge badge-pago">desde $15/mes</div>
+      </div>
+      <div class="desc">Opción más económica. Funciona como CRM visual para WhatsApp: pipeline de ventas con columnas (Nuevo → En proceso → Confirmado → Enviado). Ideal si el volumen de pedidos es bajo-medio y querés lo más simple posible.</div>
+      <div class="pros">
+        <span class="pro">Más económico</span>
+        <span class="pro">Pipeline visual</span>
+        <span class="pro">Fácil de usar</span>
+        <span class="pro">Multiagente</span>
+      </div>
+    </div>
+
+    <h3>Flujo de bot con Wati (ejemplo concreto)</h3>
+    <p style="font-size:13px;color:var(--gris);margin-bottom:12px">Así se ve la conversación cuando el bot gestiona un pedido completo sin intervención humana:</p>
+
+    <div class="wa-preview">
+      <div class="wa-msg user">Hola!<div class="hora">14:02</div></div>
+      <div class="clearfix"></div>
+      <div class="wa-msg bot">
+        <div class="nombre-bot">NutriDiet Market 🌿</div>
+        ¡Hola! 👋 Bienvenido/a a *NutriDiet Market*.<br>
+        Somos tu dietética natural en La Plata 🌿<br><br>
+        ¿En qué te puedo ayudar?<br><br>
+        🛒 *1* - Ver catálogo y hacer un pedido<br>
+        🚚 *2* - Consultar envíos<br>
+        📍 *3* - Horarios y dirección<br>
+        💬 *4* - Hablar con una persona
+        <div class="hora">✓✓ 14:02</div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="wa-msg user">1<div class="hora">14:02</div></div>
+      <div class="clearfix"></div>
+      <div class="wa-msg bot">
+        <div class="nombre-bot">NutriDiet Market 🌿</div>
+        ¡Perfecto! 😊 Acá podés ver nuestro catálogo completo 👇<br><br>
+        [🛍️ Ver Catálogo NutriDiet]<br><br>
+        Cuando elijas lo que querés, escribime los productos y te armo el pedido. También podés escribirme directamente qué buscás y te ayudo a encontrarlo 🔍
+        <div class="hora">✓✓ 14:02</div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="wa-msg user">Quiero 2 granolas sin azúcar y 1 colágeno hidrolizado<div class="hora">14:04</div></div>
+      <div class="clearfix"></div>
+      <div class="wa-msg bot">
+        <div class="nombre-bot">NutriDiet Market 🌿</div>
+        Anotado! 📝<br><br>
+        🛒 *Tu pedido:*<br>
+        • Granola Artesanal Sin Azúcar x2 — $7.000<br>
+        • Colágeno Hidrolizado 300g x1 — $9.500<br>
+        ─────────────────<br>
+        *Total: $16.500*<br><br>
+        Para confirmar necesito:<br>
+        👤 Tu nombre y apellido<br>
+        📍 Dirección de entrega (o "retiro en tienda")
+        <div class="hora">✓✓ 14:04</div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="wa-msg user">María García, Calle 50 nº 123, La Plata<div class="hora">14:05</div></div>
+      <div class="clearfix"></div>
+      <div class="wa-msg bot">
+        <div class="nombre-bot">NutriDiet Market 🌿</div>
+        Perfecto María! 💚 ¿Cómo querés pagar?<br><br>
+        💳 *1* - Transferencia / CBU<br>
+        💳 *2* - Mercado Pago<br>
+        💳 *3* - Nave<br>
+        💵 *4* - Efectivo (solo retiro en tienda)
+        <div class="hora">✓✓ 14:05</div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="wa-msg user">1<div class="hora">14:06</div></div>
+      <div class="clearfix"></div>
+      <div class="wa-msg bot">
+        <div class="nombre-bot">NutriDiet Market 🌿</div>
+        ✅ *¡Pedido recibido!*<br><br>
+        Para completar tu pedido hacé la transferencia por *$16.500* a:<br><br>
+        🏦 CBU: 0000003100012345678901<br>
+        📛 NutriDiet Market SRL<br>
+        🔖 Alias: NUTRIDIET.MKT<br><br>
+        Una vez que tengas el comprobante enviamelo acá 📸<br>
+        Preparamos tu pedido en el día 💪
+        <div class="hora">✓✓ 14:06</div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+
+    <div class="tip verde">
+      <span class="icono">✅</span>
+      <div>Todo lo de arriba lo hace el bot solo. El empleado recibe una notificación cuando el cliente envía el comprobante de pago y ahí sí entra a confirmar y preparar el pedido.</div>
+    </div>
+  </div>
+
+  <!-- FASE 3 -->
+  <div class="seccion">
+    <div class="fase-header">
+      <div class="numero">3</div>
+      <div class="info">
+        <div class="titulo">Integración con Instagram</div>
+        <div class="sub">Convertir los 95K seguidores en clientes directos por WhatsApp</div>
+      </div>
+      <div class="costo">GRATIS</div>
+    </div>
+
+    <h3>Cambios en Instagram para activar el flujo</h3>
+
+    <div class="paso">
+      <div class="num">1</div>
+      <div class="contenido">
+        <p><strong>Link en bio:</strong> Cambiá el link actual por el enlace directo a WhatsApp. El formato es: <code style="background:#f3f4f6;padding:2px 6px;border-radius:4px;font-family:monospace">https://wa.me/5492216993344?text=Hola!+quiero+hacer+un+pedido</code><br>Así cuando alguien toca el link en bio, se abre WhatsApp con el mensaje ya escrito.</p>
+      </div>
+    </div>
+
+    <div class="paso">
+      <div class="num">2</div>
+      <div class="contenido">
+        <p><strong>Historia fija (destacada):</strong> Creá una historia destacada llamada "PEDIDOS" donde expliques los 3 pasos para comprar: 1) Ver el catálogo, 2) Escribir por WhatsApp, 3) Confirmar y listo. Ponela siempre visible en el perfil.</p>
+      </div>
+    </div>
+
+    <div class="paso">
+      <div class="num">3</div>
+      <div class="contenido">
+        <p><strong>Respuestas automáticas en comentarios (ManyChat — gratis hasta 1.000 contactos):</strong> Con ManyChat podés programar que cuando alguien comente "QUIERO" en una publicación de producto, le llegue automáticamente un mensaje directo con el link al catálogo o al WhatsApp. Muy poderoso para publicaciones de nuevos productos.</p>
+      </div>
+    </div>
+
+    <div class="paso">
+      <div class="num">4</div>
+      <div class="contenido">
+        <p><strong>CTA en cada publicación:</strong> En cada post de un producto agregá siempre al final: "👉 Link en bio para pedir / Escribinos por WhatsApp". Algo simple que recuerde al seguidor dónde comprar.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="seccion">
+    <h2>📋 Checklist de implementación</h2>
+    <p class="seccion-intro">En este orden, de mayor a menor impacto. Tachá cada uno cuando esté listo.</p>
+
+    <h3>Semana 1 — WhatsApp Business App (gratis)</h3>
+    <ul class="checklist">
+      <li><span class="check">☐</span> Instalar WhatsApp Business y verificar el número del negocio</li>
+      <li><span class="check">☐</span> Completar el perfil del negocio (nombre, descripción, horarios, dirección, email, web)</li>
+      <li><span class="check">☐</span> Cargar 20-30 productos en el catálogo con foto, nombre, precio y descripción corta</li>
+      <li><span class="check">☐</span> Configurar el mensaje de bienvenida automático</li>
+      <li><span class="check">☐</span> Configurar el mensaje de ausencia (fuera de horario)</li>
+      <li><span class="check">☐</span> Cargar las 5 respuestas rápidas (/envios, /horarios, /pago, /pedido, /confirmado)</li>
+      <li><span class="check">☐</span> Crear las 6 etiquetas de estado de pedido</li>
+      <li><span class="check">☐</span> Cambiar el link en bio de Instagram al link de WhatsApp</li>
+    </ul>
+
+    <h3>Semana 2-3 — Bot automático (Wati u otra plataforma)</h3>
+    <ul class="checklist">
+      <li><span class="check">☐</span> Crear cuenta en Wati.io (tienen período de prueba gratuito)</li>
+      <li><span class="check">☐</span> Conectar el número de WhatsApp a Wati (proceso guiado, ~1 hora)</li>
+      <li><span class="check">☐</span> Crear el flujo de bienvenida con opciones (el del ejemplo de arriba)</li>
+      <li><span class="check">☐</span> Crear el flujo de pedidos (nombre → productos → dirección → pago)</li>
+      <li><span class="check">☐</span> Crear el flujo de envíos y preguntas frecuentes</li>
+      <li><span class="check">☐</span> Probar el bot completo desde un número diferente</li>
+      <li><span class="check">☐</span> Capacitar al empleado en el panel de Wati (30 minutos)</li>
+    </ul>
+
+    <h3>Mes 2 — Integración con Instagram</h3>
+    <ul class="checklist">
+      <li><span class="check">☐</span> Crear historia destacada "PEDIDOS" en Instagram</li>
+      <li><span class="check">☐</span> Crear cuenta en ManyChat (gratis) y conectar con Instagram</li>
+      <li><span class="check">☐</span> Programar respuesta automática a comentarios "QUIERO" en posts de productos</li>
+      <li><span class="check">☐</span> Agregar CTA de WhatsApp en todas las publicaciones nuevas</li>
+    </ul>
+  </div>
+
+  <!-- COSTOS -->
+  <div class="seccion">
+    <h2>💰 Resumen de costos</h2>
+    <table>
+      <tr><th>Herramienta</th><th>Qué hace</th><th>Costo mensual</th></tr>
+      <tr>
+        <td><strong>WhatsApp Business App</strong></td>
+        <td>Catálogo, respuestas rápidas, etiquetas, mensajes automáticos básicos</td>
+        <td><strong style="color:var(--verde)">Gratis</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Wati.io</strong> (recomendado)</td>
+        <td>Bot completo, multiagente, CRM, flujos automáticos</td>
+        <td><strong>~USD 49/mes</strong></td>
+      </tr>
+      <tr>
+        <td><strong>ManyChat</strong></td>
+        <td>Respuestas automáticas en comentarios de Instagram</td>
+        <td><strong style="color:var(--verde)">Gratis hasta 1.000 contactos</strong></td>
+      </tr>
+      <tr>
+        <td colspan="2"><strong>TOTAL sistema completo</strong></td>
+        <td><strong style="color:var(--verde-wa-dark)">~$50.000 ARS/mes</strong></td>
+      </tr>
+    </table>
+    <div class="tip verde">
+      <span class="icono">💡</span>
+      <div>Con un sistema así automatizado, si el bot cierra 2-3 pedidos extra por día que antes se perdían por falta de respuesta rápida, el costo se amortiza en la primera semana del mes.</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Guía de automatización WhatsApp Business · NutriDiet Market · nutridietmarket.com.ar</p>
+    <p style="margin-top:4px">Elaborada el 29 de abril de 2026. Los precios de plataformas pueden variar.</p>
+  </div>
+
+</div>
+</body>
+</html>

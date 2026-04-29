@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bot WhatsApp — Flujos y Textos Completos — NutriDiet Market</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --verde-wa: #25D366;
+    --verde-wa-dark: #128C7E;
+    --verde-wa-oscuro: #075E54;
+    --verde: #2d7a4f;
+    --verde-claro: #e8f5ee;
+    --azul: #2563eb;
+    --azul-claro: #eff6ff;
+    --rojo: #dc2626;
+    --rojo-claro: #fef2f2;
+    --naranja: #ea580c;
+    --naranja-claro: #fff7ed;
+    --morado: #7c3aed;
+    --morado-claro: #f5f3ff;
+    --gris: #6b7280;
+    --gris-claro: #f9fafb;
+    --gris-borde: #e5e7eb;
+    --texto: #111827;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--texto);
+    background: #fff;
+  }
+  .page { max-width: 940px; margin: 0 auto; padding: 40px 48px; }
+
+  /* PORTADA */
+  .portada {
+    background: linear-gradient(135deg, var(--verde-wa-oscuro) 0%, var(--verde-wa-dark) 60%, var(--verde-wa) 100%);
+    color: white;
+    padding: 56px 48px 48px;
+    border-radius: 0 0 24px 24px;
+    margin-bottom: 48px;
+  }
+  .portada .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.95);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+  .portada h1 { font-size: 34px; font-weight: 800; line-height: 1.2; margin-bottom: 10px; }
+  .portada .sub { font-size: 15px; opacity: 0.85; margin-bottom: 32px; max-width: 600px; line-height: 1.6; }
+  .portada .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+  .portada .chip {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* INDICE */
+  .indice {
+    background: var(--gris-claro);
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+  }
+  .indice h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gris); margin-bottom: 12px; }
+  .indice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .indice a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--verde-wa-dark);
+    text-decoration: none;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+  .indice a:hover { background: white; }
+  .indice .num {
+    width: 22px;
+    height: 22px;
+    background: var(--verde-wa-dark);
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* SECCIONES */
+  .seccion { margin-bottom: 52px; }
+  h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--verde-wa-oscuro);
+    padding-bottom: 10px;
+    border-bottom: 2px solid #dcfce7;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .seccion-intro { font-size: 13px; color: var(--gris); margin-bottom: 20px; line-height: 1.6; }
+  h3 { font-size: 14px; font-weight: 700; margin: 22px 0 10px; color: var(--texto); }
+  h4 { font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--texto); }
+
+  /* FLUJO VISUAL */
+  .flujo-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 16px 0 24px;
+  }
+  .nodo {
+    border-radius: 10px;
+    padding: 12px 20px;
+    width: 80%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    border: 2px solid transparent;
+  }
+  .nodo-bot { background: var(--verde-claro); border-color: #86efac; color: var(--verde-wa-oscuro); }
+  .nodo-user { background: #dcf8c6; border-color: #86efac; color: #166534; }
+  .nodo-decision { background: #fef9c3; border-color: #fde047; color: #854d0e; }
+  .nodo-accion { background: var(--azul-claro); border-color: #bfdbfe; color: var(--azul); }
+  .nodo-manual { background: #ede9fe; border-color: #c4b5fd; color: var(--morado); }
+  .flecha-flujo { color: var(--gris); font-size: 16px; padding: 3px 0; line-height: 1; }
+  .flujo-rama {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 80%;
+    margin: 4px 0;
+  }
+  .nodo-rama { border-radius: 8px; padding: 10px 14px; font-size: 12px; font-weight: 600; text-align: center; }
+
+  /* WHATSAPP PREVIEW */
+  .wa-container {
+    background: #e5ddd5;
+    border-radius: 14px;
+    padding: 16px;
+    margin: 12px 0 20px;
+    position: relative;
+  }
+  .wa-container .wa-header {
+    background: var(--verde-wa-oscuro);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 10px 10px 0 0;
+    margin: -16px -16px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .wa-header .avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--verde-wa);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .wa-msg {
+    max-width: 82%;
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.55;
+    position: relative;
+    clear: both;
+    word-break: break-word;
+  }
+  .wa-msg.bot {
+    background: white;
+    border-radius: 0 8px 8px 8px;
+    float: left;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  .wa-msg.user {
+    background: #dcf8c6;
+    border-radius: 8px 0 8px 8px;
+    float: right;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  .wa-msg.nota {
+    background: #fff8e1;
+    border-radius: 8px;
+    float: none;
+    margin: 8px auto;
+    max-width: 90%;
+    text-align: center;
+    font-size: 11px;
+    color: #856404;
+    border: 1px dashed #fbbf24;
+  }
+  .wa-msg .hora { font-size: 10px; color: rgba(0,0,0,0.4); text-align: right; margin-top: 4px; }
+  .wa-msg .bot-name { font-size: 10px; font-weight: 700; color: var(--verde-wa-dark); margin-bottom: 3px; }
+  .clearfix::after { content: ''; display: table; clear: both; }
+
+  /* TEXTO COPIABLE */
+  .texto-copiable {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 10px 0 16px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+    position: relative;
+  }
+  .texto-copiable .label {
+    display: inline-block;
+    background: var(--verde-wa-dark);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* TIPS */
+  .tip {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin: 10px 0 16px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .tip.verde { background: var(--verde-claro); border-left: 4px solid var(--verde); }
+  .tip.azul { background: var(--azul-claro); border-left: 4px solid var(--azul); }
+  .tip.naranja { background: var(--naranja-claro); border-left: 4px solid var(--naranja); }
+  .tip.rojo { background: var(--rojo-claro); border-left: 4px solid var(--rojo); }
+  .tip.morado { background: var(--morado-claro); border-left: 4px solid var(--morado); }
+  .tip .icono { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  /* WATI CONFIG */
+  .wati-paso {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    padding: 14px 16px;
+    background: var(--gris-claro);
+    border: 1px solid var(--gris-borde);
+    border-radius: 10px;
+  }
+  .wati-paso .num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--verde-wa-dark);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .wati-paso p { font-size: 13px; color: #374151; line-height: 1.6; }
+  .wati-paso code {
+    background: #e5e7eb;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--verde-wa-oscuro);
+  }
+
+  /* TABLA */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0 20px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  th {
+    background: var(--verde-wa-oscuro);
+    color: white;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--gris-borde); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--gris-claro); }
+
+  /* KEYWORD TAG */
+  .keyword {
+    display: inline-block;
+    background: #d1fae5;
+    color: #065f46;
+    font-family: monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin: 2px;
+  }
+
+  /* SEPARADOR DE FLUJO */
+  .flujo-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 32px 0 24px;
+    color: var(--gris);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .flujo-divider::before,
+  .flujo-divider::after { content: ''; flex: 1; height: 1px; background: var(--gris-borde); }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gris-borde);
+    text-align: center;
+    font-size: 11px;
+    color: var(--gris);
+  }
+
+  @media print {
+    body { font-size: 12px; }
+    .portada { -webkit-print-color-adjust: exact; print-color-adjust: exact; border-radius: 0; }
+    .wa-container, .wa-container .wa-header, .tip, .texto-copiable, th, .nodo, .wati-paso { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { padding: 24px 32px; }
+    h2 { page-break-after: avoid; }
+    .seccion { page-break-inside: avoid; }
+    .wa-container { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<div class="portada">
+  <div class="badge">🤖 Guía de Implementación Completa</div>
+  <h1>Bot WhatsApp — Flujos y Textos</h1>
+  <div class="sub">Todos los mensajes exactos, flujos de conversación y configuración en Wati para que el bot de NutriDiet Market funcione solo las 24 horas. Copiá y pegá directamente.</div>
+  <div class="chips">
+    <div class="chip">9 flujos completos</div>
+    <div class="chip">40+ mensajes listos para copiar</div>
+    <div class="chip">Configuración Wati paso a paso</div>
+    <div class="chip">Post-venta automatizado</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- INDICE -->
+  <div class="indice">
+    <h3>Contenido de esta guía</h3>
+    <div class="indice-grid">
+      <a href="#arquitectura"><div class="num">0</div> Arquitectura del bot</a>
+      <a href="#wati-setup"><div class="num">W</div> Configuración inicial en Wati</a>
+      <a href="#flujo-bienvenida"><div class="num">1</div> Flujo de Bienvenida (menú principal)</a>
+      <a href="#flujo-catalogo"><div class="num">2</div> Flujo de Catálogo</a>
+      <a href="#flujo-pedido"><div class="num">3</div> Flujo de Pedido completo</a>
+      <a href="#flujo-pago"><div class="num">4</div> Flujo de Pago y confirmación</a>
+      <a href="#flujo-envios"><div class="num">5</div> Flujo de Envíos y preguntas</a>
+      <a href="#flujo-local"><div class="num">6</div> Flujo de Horarios y local</a>
+      <a href="#flujo-reactivacion"><div class="num">7</div> Flujo de Reactivación (carrito abandonado)</a>
+      <a href="#flujo-postventa"><div class="num">8</div> Flujo Post-venta y reseña</a>
+      <a href="#flujo-empleado"><div class="num">9</div> Panel del empleado: qué hace en Wati</a>
+    </div>
+  </div>
+
+  <!-- ARQUITECTURA -->
+  <div class="seccion" id="arquitectura">
+    <h2>🗺️ 0. Arquitectura general del bot</h2>
+    <p class="seccion-intro">El bot tiene 9 flujos interconectados. Cada flujo se activa por palabras clave o por la opción que el cliente elige en el menú.</p>
+
+    <table>
+      <tr><th>Flujo</th><th>Cuándo se activa</th><th>Lo hace solo el bot</th></tr>
+      <tr><td><strong>1. Bienvenida</strong></td><td>Primer mensaje del cliente / "hola" / "buenas"</td><td>✅ Sí</td></tr>
+      <tr><td><strong>2. Catálogo</strong></td><td>Opción 1 del menú / "catálogo" / "qué tienen"</td><td>✅ Sí</td></tr>
+      <tr><td><strong>3. Pedido</strong></td><td>Opción 2 del menú / "quiero pedir" / "pedido"</td><td>✅ Sí (hasta confirmar)</td></tr>
+      <tr><td><strong>4. Pago</strong></td><td>Cliente confirma pedido y elige medio de pago</td><td>✅ Sí (espera comprobante)</td></tr>
+      <tr><td><strong>5. Envíos</strong></td><td>Opción 3 del menú / "envío" / "costo envío"</td><td>✅ Sí</td></tr>
+      <tr><td><strong>6. Local</strong></td><td>Opción 4 del menú / "horario" / "dirección"</td><td>✅ Sí</td></tr>
+      <tr><td><strong>7. Reactivación</strong></td><td>Cliente no responde en 2 horas durante pedido</td><td>✅ Sí</td></tr>
+      <tr><td><strong>8. Post-venta</strong></td><td>48hs después de marcar pedido como enviado</td><td>✅ Sí</td></tr>
+      <tr><td><strong>9. Agente humano</strong></td><td>Opción 5 del menú / "persona" / bot no entiende x2</td><td>❌ Pasa al empleado</td></tr>
+    </table>
+
+    <div class="tip azul">
+      <span class="icono">ℹ️</span>
+      <div><strong>Regla de oro:</strong> Si el bot no entiende algo dos veces seguidas, automáticamente pasa la conversación al empleado con el historial completo. El cliente nunca se queda sin respuesta.</div>
+    </div>
+  </div>
+
+  <!-- WATI SETUP -->
+  <div class="seccion" id="wati-setup">
+    <h2>⚙️ W. Configuración inicial en Wati</h2>
+    <p class="seccion-intro">Antes de crear los flujos, hay que dejar Wati configurado correctamente. Hacé esto una sola vez.</p>
+
+    <div class="wati-paso">
+      <div class="num">1</div>
+      <p>Creá una cuenta en <strong>wati.io</strong>. Elegí el plan "Growth" (el mínimo para bots). En el registro te piden el número de WhatsApp del negocio (+54 9 221 699-3344). Seguí el asistente de verificación — te van a pedir confirmar el número por SMS o llamada.</p>
+    </div>
+    <div class="wati-paso">
+      <div class="num">2</div>
+      <p>En el panel de Wati andá a <code>Settings → Business Profile</code> y completá exactamente igual que en el perfil de WhatsApp Business: nombre, descripción, dirección, horarios, email, web.</p>
+    </div>
+    <div class="wati-paso">
+      <div class="num">3</div>
+      <p>Andá a <code>Settings → Away Message</code> y activá el mensaje de ausencia. Configurá el horario como "Fuera de Lun-Vie 9:00-20:00 y Sáb 10:00-19:00". El texto del mensaje está en el Flujo 1 de esta guía.</p>
+    </div>
+    <div class="wati-paso">
+      <div class="num">4</div>
+      <p>En <code>Contacts → Labels</code> creá estas 6 etiquetas en este orden: <strong>Nuevo contacto</strong> (rojo), <strong>Consultando</strong> (naranja), <strong>Pedido en curso</strong> (amarillo), <strong>Esperando pago</strong> (azul), <strong>Pago confirmado</strong> (verde), <strong>Enviado</strong> (gris). El empleado las va a usar para organizar los chats.</p>
+    </div>
+    <div class="wati-paso">
+      <div class="num">5</div>
+      <p>En <code>Team → Add Member</code> agregá a los empleados que van a atender. Asignales el rol "Agent". Ellos solo van a ver los chats que les asignés o los que pase el bot.</p>
+    </div>
+    <div class="wati-paso">
+      <div class="num">6</div>
+      <p>En <code>Automation → Keywords</code> configurá las palabras clave que disparan cada flujo. Ver tabla de keywords al final de esta sección.</p>
+    </div>
+
+    <h3>Tabla de palabras clave (keywords) a configurar en Wati</h3>
+    <table>
+      <tr><th>Keywords a cargar</th><th>Flujo que dispara</th></tr>
+      <tr><td><span class="keyword">hola</span> <span class="keyword">buenas</span> <span class="keyword">buenos dias</span> <span class="keyword">buenas tardes</span> <span class="keyword">hi</span> <span class="keyword">hello</span></td><td>Flujo 1 — Bienvenida</td></tr>
+      <tr><td><span class="keyword">catalogo</span> <span class="keyword">catálogo</span> <span class="keyword">productos</span> <span class="keyword">qué tienen</span> <span class="keyword">que venden</span></td><td>Flujo 2 — Catálogo</td></tr>
+      <tr><td><span class="keyword">quiero pedir</span> <span class="keyword">pedido</span> <span class="keyword">comprar</span> <span class="keyword">quiero</span></td><td>Flujo 3 — Pedido</td></tr>
+      <tr><td><span class="keyword">envio</span> <span class="keyword">envío</span> <span class="keyword">envios</span> <span class="keyword">costo envio</span> <span class="keyword">mandan</span></td><td>Flujo 5 — Envíos</td></tr>
+      <tr><td><span class="keyword">horario</span> <span class="keyword">horarios</span> <span class="keyword">dirección</span> <span class="keyword">donde estan</span> <span class="keyword">donde están</span></td><td>Flujo 6 — Local</td></tr>
+      <tr><td><span class="keyword">persona</span> <span class="keyword">asesor</span> <span class="keyword">humano</span> <span class="keyword">empleado</span></td><td>Flujo 9 — Agente humano</td></tr>
+    </table>
+  </div>
+
+  <!-- FLUJO 1: BIENVENIDA -->
+  <div class="seccion" id="flujo-bienvenida">
+    <h2>👋 Flujo 1 — Bienvenida y menú principal</h2>
+    <p class="seccion-intro">Es el primer mensaje que recibe cualquier persona que escriba. Debe ser cálido, claro y darle opciones concretas para no perderse. Se activa también si el cliente escribe "menú" o "inicio" en cualquier momento.</p>
+
+    <h3>Mensaje de bienvenida (primera vez que escribe)</h3>
+    <div class="texto-copiable"><div class="label">COPIAR EN WATI — Mensaje de Bienvenida</div>
+¡Hola! 👋 Bienvenido/a a *NutriDiet Market* 🌿
+
+Somos tu supermercado natural en La Plata: alimentos saludables, suplementos, cosmética natural y bazar decorativo. Enviamos a todo el país 🚚
+
+¿En qué te puedo ayudar hoy?
+
+🛒 *1* — Ver catálogo de productos
+📦 *2* — Hacer un pedido
+🚚 *3* — Consultar envíos y costos
+📍 *4* — Horarios y dirección del local
+💬 *5* — Hablar con una persona del equipo
+
+_Respondé con el número de tu elección_ 😊</div>
+
+    <h3>Simulación del flujo de bienvenida</h3>
+    <div class="wa-container">
+      <div class="wa-header"><div class="avatar">🌿</div> NutriDiet Market · En línea</div>
+      <div class="wa-msg user">Hola!<div class="hora">11:03</div></div>
+      <div class="clearfix"></div>
+      <div class="wa-msg bot">
+        <div class="bot-name">NutriDiet Market 🌿</div>
+        ¡Hola! 👋 Bienvenido/a a *NutriDiet Market* 🌿<br><br>
+        Somos tu supermercado natural en La Plata: alimentos saludables, suplementos, cosmética natural y bazar decorativo. Enviamos a todo el país 🚚<br><br>
+        ¿En qué te puedo ayudar hoy?<br><br>
+        🛒 *1* — Ver catálogo de productos<br>
+        📦 *2* — Hacer un pedido<br>
+        🚚 *3* — Consultar envíos y costos<br>
+        📍 *4* — Horarios y dirección del local<br>
+        💬 *5* — Hablar con una persona del equipo<br><br>
+        <i>Respondé con el número de tu elección</i> 😊
+        <div class="hora">✓✓ 11:03</div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+
+    <h3>Mensaje de ausencia (fuera de horario)</h3>
+    <div class="texto-copiable"><div class="label">COPIAR EN WATI — Mensaje de Ausencia</div>
+¡Hola! 🌙 Gracias por escribirnos a *NutriDiet Market*.
+
+En este momento estamos fuera de nuestro horario de atención:
+📅 Lunes a Viernes: 9:00 a 20:00 hs
+📅 Sábados: 10:00 a 19:00 hs
+
+Tu mensaje quedó registrado y te respondemos a la brevedad 💚
+
+Mientras tanto podés ver nuestro catálogo completo tocando el ícono 🛍️ en esta conversación.
+
+_¡Hasta pronto!_ 🌿</div>
+
+    <h3>Respuesta cuando el bot no entiende (primera vez)</h3>
+    <div class="texto-copiable"><div class="label">COPIAR EN WATI — No entiendo (1ra vez)</div>
+Hmm, no entendí bien tu mensaje 😅
+
+¿Querés que te muestre el menú de opciones?
+
+🛒 *1* — Ver catálogo
+📦 *2* — Hacer un pedido
+🚚 *3* — Envíos
+📍 *4* — Horarios y local
+💬 *5* — Hablar con una persona</div>
+
+    <h3>Respuesta cuando el bot no entiende (segunda vez → pasa a humano)</h3>
+    <div class="texto-copiable"><div class="label">COPIAR EN WATI — No entiendo (2da vez → deriva a agente)</div>
+Disculpá, no pude entender tu consulta 🙏
+
+Voy a pasarte con una persona de nuestro equipo para que te ayude mejor. En un momento te atienden 💚
+
+_[ASIGNAR AL AGENTE DISPONIBLE]_</div>
+  </div>
+
+  <!-- FLUJO 2: CATALOGO -->
+  <div class="seccion" id="flujo-catalogo">
+    <h2>🛒 Flujo 2 — Catálogo</h2>
+    <p class="seccion-intro">Cuando el cliente elige la opción 1 o escribe "catálogo", "productos", etc. El bot le muestra el catálogo y queda disponible para guiarlo al pedido.</p>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 2A — Mostrar catálogo</div>
+¡Perfecto! Acá podés ver todo nuestro catálogo 👇
+
+[🛍️ Ver Catálogo NutriDiet Market]
+
+Tenemos más de 500 productos en estas categorías:
+🥦 *Alimentos naturales* — granolas, frutos secos, semillas, snacks, harinas, legumbres, aceites
+💊 *Suplementos* — proteínas, colágeno, vitaminas, minerales, antioxidantes
+🧴 *Cosmética natural* — cuidado de piel, cabello y cuerpo
+🏡 *NutHome* — bazar y decoración sustentable
+
+¿Estás buscando algo en particular o querés que te recomiende? Contame 😊</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 2B — Si el cliente dice qué busca</div>
+¡Gracias por contarme! 🔍 Anotá que si escribís exactamente lo que buscás (por ejemplo "proteína vegana" o "granola sin azúcar") lo encontrás en el buscador del catálogo 👆
+
+¿Querés que arme el pedido directamente? Solo decime el producto y la cantidad y en un segundo te tengo el total 🛒</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 2C — Si el cliente pide recomendación (ej: "no sé qué tomar")</div>
+¡Con gusto te ayudo! Para recomendarte mejor, contame:
+
+¿Qué estás buscando? Por ejemplo:
+• Bajar de peso 🏃
+• Aumentar masa muscular 💪
+• Mejorar la digestión 🌱
+• Energía y rendimiento ⚡
+• Cuidar la piel y el cabello ✨
+• Alimentación vegana o sin TACC 🌿
+
+Con eso te puedo orientar mucho mejor 😊</div>
+  </div>
+
+  <!-- FLUJO 3: PEDIDO -->
+  <div class="seccion" id="flujo-pedido">
+    <h2>📦 Flujo 3 — Pedido completo</h2>
+    <p class="seccion-intro">El flujo más importante. Guía al cliente desde "quiero pedir" hasta tener todos los datos necesarios para preparar el envío. Cada mensaje espera la respuesta del cliente antes de continuar.</p>
+
+    <div class="flujo-visual">
+      <div class="nodo nodo-bot">Bot: "¿Qué querés pedir hoy?"</div>
+      <div class="flecha-flujo">↓</div>
+      <div class="nodo nodo-user">Cliente: lista sus productos</div>
+      <div class="flecha-flujo">↓</div>
+      <div class="nodo nodo-bot">Bot: repite el pedido con precios y total</div>
+      <div class="flecha-flujo">↓</div>
+      <div class="nodo nodo-user">Cliente: confirma o modifica</div>
+      <div class="flecha-flujo">↓</div>
+      <div class="nodo nodo-bot">Bot: "¿Envío o retiro en tienda?"</div>
+      <div class="flecha-flujo">↓</div>
+      <div class="flujo-rama">
+        <div class="nodo-rama nodo-bot">Envío: pide dirección y código postal</div>
+        <div class="nodo-rama nodo-bot">Retiro: confirma horarios del local</div>
+      </div>
+      <div class="flecha-flujo">↓</div>
+      <div class="nodo nodo-bot">Bot: pide nombre y apellido</div>
+      <div class="flecha-flujo">↓</div>
+      <div class="nodo nodo-bot">Bot: muestra opciones de pago</div>
+      <div class="flecha-flujo">↓</div>
+      <div class="nodo nodo-accion">Bot: envía datos de pago + resumen del pedido al cliente</div>
+      <div class="flecha-flujo">↓</div>
+      <div class="nodo nodo-manual">⬇ EMPLEADO: recibe notificación de pedido pendiente de pago</div>
+    </div>
+
+    <div class="flujo-divider">mensajes exactos</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 3A — Inicio del pedido</div>
+¡Genial, armemos tu pedido! 🛒
+
+Decime qué productos querés y la cantidad de cada uno. Podés ver el catálogo completo tocando el ícono 🛍️ arriba.
+
+Por ejemplo:
+_"2 granolas sin azúcar, 1 colágeno 300g y 1 proteína vainilla"_
+
+¡Escribime lo que querés! 😊</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 3B — Confirmar productos y total (completar con datos reales)</div>
+Anotado! 📝 Acá está tu pedido:
+
+🛒 *Resumen del pedido:*
+• [PRODUCTO 1] x[CANTIDAD] — $[PRECIO]
+• [PRODUCTO 2] x[CANTIDAD] — $[PRECIO]
+• [PRODUCTO 3] x[CANTIDAD] — $[PRECIO]
+─────────────────────
+*Subtotal: $[TOTAL]*
+_(El costo de envío se suma después según tu zona)_
+
+¿Está todo bien o querés cambiar algo? ✅</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 3C — Tipo de entrega</div>
+Perfecto! ¿Cómo preferís recibir tu pedido?
+
+🏠 *1* — Envío a domicilio (calculamos el costo según tu zona)
+🏪 *2* — Retiro en el local sin cargo (Av. 7 e/34 y 35, La Plata)</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 3D — Si elige envío: pedir dirección</div>
+¡Perfecto! Para calcular el envío necesito:
+
+📍 Calle, número, piso/depto (si aplica)
+🏙️ Ciudad y provincia
+📮 Código postal
+
+Podés mandarlo todo junto en un mensaje 😊</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 3E — Si elige retiro en tienda</div>
+¡Genial! Podés retirar tu pedido en:
+
+📍 *Av. 7 e/34 y 35 nº 136, La Plata*
+🕘 Lunes a Viernes: 9:00 a 20:00 hs
+🕙 Sábados: 10:00 a 19:00 hs
+
+Te avisamos cuando esté listo para retirar 💚
+
+Ahora necesito tu nombre completo para registrar el pedido 👇</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 3F — Pedir nombre (después de confirmar dirección de envío)</div>
+¡Perfecto! Ahora necesito tu *nombre y apellido completo* para registrar el pedido 👇</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 3G — Mostrar opciones de pago</div>
+¡Gracias, [NOMBRE]! 😊 Ya casi terminamos.
+
+¿Cómo querés pagar?
+
+💳 *1* — Transferencia bancaria / CBU
+📱 *2* — Mercado Pago
+🔵 *3* — Nave
+💵 *4* — Efectivo (solo retiro en tienda)</div>
+  </div>
+
+  <!-- FLUJO 4: PAGO -->
+  <div class="seccion" id="flujo-pago">
+    <h2>💳 Flujo 4 — Pago y confirmación</h2>
+    <p class="seccion-intro">Una vez que el cliente eligió la forma de pago, el bot envía los datos y espera el comprobante. Cuando llega el comprobante, notifica al empleado.</p>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 4A — Si elige TRANSFERENCIA</div>
+¡Perfecto! Hacé la transferencia por *$[TOTAL]* a:
+
+🏦 *CBU:* 0000003100012345678901
+📛 *Titular:* NutriDiet Market
+🔖 *Alias:* NUTRIDIET.MKT
+💬 *Referencia:* Tu nombre y apellido
+
+Una vez que tengas el comprobante envialo acá como foto 📸 y confirmamos tu pedido al toque 💚</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 4B — Si elige MERCADO PAGO</div>
+¡Perfecto! Podés pagar por *$[TOTAL]* por Mercado Pago:
+
+📱 *Alias MP:* nutridiet.market
+🔗 O por link de pago: [LINK_MP]
+
+Una vez que pagues envianos el comprobante o captura de pantalla acá 📸 y confirmamos enseguida 💚</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 4C — Si elige NAVE</div>
+¡Perfecto! Podés pagar por *$[TOTAL]* por Nave:
+
+📱 *CVU/Alias:* nutridiet.market
+🔢 *CUIT:* [COMPLETAR]
+
+Una vez que pagues envianos el comprobante acá 📸 y confirmamos tu pedido 💚</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 4D — Si elige EFECTIVO (retiro en tienda)</div>
+¡Perfecto! Abonás *$[TOTAL]* en efectivo cuando venís a retirar al local 💵
+
+📍 *Av. 7 e/34 y 35 nº 136, La Plata*
+🕘 Lun a Vie: 9:00-20:00 / Sáb: 10:00-19:00
+
+Te avisamos por acá cuando el pedido esté listo para retirar 📲
+
+¿Alguna pregunta más? 😊</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 4E — Cuando llega el comprobante (respuesta inmediata del bot)</div>
+¡Recibimos tu comprobante! 🎉
+
+Estamos verificando el pago. En los próximos minutos te confirmamos y preparamos tu pedido 💪
+
+*Resumen de tu pedido:*
+• [PRODUCTOS]
+📍 [DIRECCIÓN O RETIRO EN TIENDA]
+💳 [MÉTODO DE PAGO]
+
+_¡Gracias por elegirnos, [NOMBRE]!_ 🌿</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 4F — Confirmación de pago (lo envía el empleado cuando verifica)</div>
+✅ *¡Pago confirmado!*
+
+Tu pedido ya está en preparación 📦
+
+*#[NUMERO_PEDIDO] — [NOMBRE]*
+• [PRODUCTOS]
+📍 [DIRECCIÓN]
+
+En cuanto despachemos te mandamos el número de seguimiento para que puedas rastrear tu envío 🚚
+
+¡Gracias por confiar en NutriDiet Market! 💚🌿</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 4G — Envío despachado (lo envía el empleado)</div>
+🚚 *¡Tu pedido fue despachado!*
+
+*Número de seguimiento:* [TRACKING]
+*Servicio:* ShipNow
+*Podés rastrear tu envío en:* www.shipnow.com.ar
+
+Tiempo estimado de entrega:
+• CABA y GBA: 24-48hs hábiles
+• Interior del país: 3-5 días hábiles
+
+Si tenés alguna duda estamos acá 💚 ¡Que disfrutes tus productos! 🌿</div>
+
+    <div class="tip morado">
+      <span class="icono">👤</span>
+      <div><strong>Tarea del empleado en este flujo:</strong> Solo tiene que (1) verificar el pago en la app bancaria o Mercado Pago, (2) confirmar con el mensaje 4F, (3) preparar el pedido, (4) despacharlo y enviar el mensaje 4G con el tracking. Todo lo demás lo hace el bot.</div>
+    </div>
+  </div>
+
+  <!-- FLUJO 5: ENVIOS -->
+  <div class="seccion" id="flujo-envios">
+    <h2>🚚 Flujo 5 — Envíos y costos</h2>
+    <p class="seccion-intro">Responde todas las dudas sobre envíos sin necesitar al empleado.</p>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 5A — Información general de envíos</div>
+¡Claro! Acá te cuento todo sobre los envíos 📦
+
+*Enviamos a todo el país* a través de ShipNow 🚚
+
+📋 *Tiempos de entrega:*
+• CABA y GBA: 24-48 horas hábiles
+• Interior del país: 3-5 días hábiles
+• La Plata y alrededores: 24-48 horas hábiles
+
+💰 *Costo de envío:*
+El costo se calcula según tu código postal al momento de confirmar el pedido. Para darte un precio exacto necesito tu CP 📮
+
+📦 *Retiro sin cargo:*
+También podés retirar gratis en nuestro local de La Plata:
+📍 Av. 7 e/34 y 35 nº 136
+
+¿Querés que te calcule el costo de envío a tu zona? Mandame tu código postal 😊</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 5B — Si pide el costo a su código postal</div>
+Anotado, CP [CODIGO_POSTAL] 📮
+
+El costo estimado de envío a tu zona es aproximadamente *$[PRECIO_ENVIO]*.
+
+Este valor puede ajustarse levemente según el peso final del pedido 📦
+
+¿Te gustaría arrancar un pedido? Solo escribime "quiero pedir" y te guío 🛒</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 5C — Mínimo de compra</div>
+Para envíos a domicilio el pedido mínimo es de *$[MONTO_MINIMO]*.
+
+Para pedidos más chicos siempre podés retirar sin cargo en nuestro local 🏪
+
+¿Querés arrancar un pedido? 😊</div>
+  </div>
+
+  <!-- FLUJO 6: LOCAL -->
+  <div class="seccion" id="flujo-local">
+    <h2>📍 Flujo 6 — Horarios y local</h2>
+    <p class="seccion-intro">Información del local físico. Responde automáticamente sin necesitar al empleado.</p>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 6A — Horarios y dirección</div>
+¡Con gusto! Acá tenés todo sobre nuestro local 📍
+
+🏪 *NutriDiet Market*
+Av. 7 e/34 y 35 nº 136, La Plata, Buenos Aires
+
+🕘 *Horarios de atención:*
+• Lunes a Viernes: 9:00 a 20:00 hs
+• Sábados: 10:00 a 19:00 hs
+• Domingos: cerrado
+
+🗺️ *Ver en Google Maps:*
+https://maps.google.com/?q=Av+7+136+La+Plata
+
+📞 *También podés llamarnos:*
++54 9 221 699-3344
+
+Para los pedidos online operamos las 24hs con despacho en días hábiles 🚚
+
+¿Puedo ayudarte con algo más? 😊</div>
+  </div>
+
+  <!-- FLUJO 7: REACTIVACION -->
+  <div class="seccion" id="flujo-reactivacion">
+    <h2>🔔 Flujo 7 — Reactivación (carrito abandonado)</h2>
+    <p class="seccion-intro">Si un cliente empieza un pedido pero no lo termina (deja de responder en el medio), el bot lo recontacta automáticamente. Configurar en Wati como "Follow-up automático a las 2 horas si no hubo respuesta".</p>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 7A — Reactivación a las 2 horas</div>
+¡Hola! 👋 Te escribimos desde *NutriDiet Market*.
+
+Notamos que quedaste a mitad de tu pedido 🛒 ¿Todo bien? ¿Puedo ayudarte a terminarlo?
+
+Si querés seguir desde donde lo dejaste, respondé cualquier cosa y continuamos 💚
+
+_Si ya no querés seguir, no te preocupes, no te vamos a molestar más_ 🙂</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 7B — Si el cliente retoma (sigue desde donde estaba)</div>
+¡Perfecto! Seguimos con tu pedido 😊
+
+Habías elegido:
+• [PRODUCTOS QUE HABÍA ELEGIDO]
+
+¿Confirmo eso o querés cambiar algo? ✅</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 7C — Reactivación a las 24 horas (segunda y última)</div>
+¡Hola! 🌿 Una última consulta desde *NutriDiet Market*.
+
+¿Pudiste concretar tu pedido? Si necesitás ayuda o tenés alguna duda, estamos acá 💚
+
+También podés ver nuestro catálogo completo y hacer tu pedido cuando quieras 🛒
+
+_¡Te esperamos!_ 🌿</div>
+
+    <div class="tip verde">
+      <span class="icono">💡</span>
+      <div><strong>Cómo configurarlo en Wati:</strong> En <code>Automation → Follow-up</code>, creá una regla que diga: "Si un chat tiene la etiqueta 'Pedido en curso' y no hubo respuesta del cliente en 2 horas, enviar mensaje 7A". Después de 24 horas sin respuesta, enviar 7C y quitar la etiqueta.</div>
+    </div>
+  </div>
+
+  <!-- FLUJO 8: POST-VENTA -->
+  <div class="seccion" id="flujo-postventa">
+    <h2>⭐ Flujo 8 — Post-venta y reseña en Google</h2>
+    <p class="seccion-intro">48 horas después de marcar un pedido como "Enviado", el bot contacta automáticamente al cliente para saber si llegó todo bien y pedirle que deje una reseña. Es el flujo que convierte clientes en promotores.</p>
+
+    <div class="tip azul">
+      <span class="icono">ℹ️</span>
+      <div><strong>Cómo configurarlo en Wati:</strong> En <code>Automation → Follow-up</code>, creá una regla: "Si un chat tiene la etiqueta 'Enviado' y pasaron 48 horas, enviar mensaje 8A". El empleado solo tiene que acordarse de poner la etiqueta "Enviado" cuando despacha.</div>
+    </div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 8A — Post-venta (48hs después del envío)</div>
+¡Hola, [NOMBRE]! 👋 Te escribimos desde *NutriDiet Market* 🌿
+
+¿Ya recibiste tu pedido? Esperamos que todo haya llegado perfecto 📦
+
+Nos encantaría saber cómo fue tu experiencia 😊 ¿Podés respondernos estas dos preguntas cortitas?
+
+⭐ ¿Del 1 al 5, cómo calificarías tu compra?
+(1 = muy mal · 5 = excelente)</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 8B — Si pone 4 o 5 estrellas</div>
+¡Qué bueno! Nos alegra muchísimo 🎉💚
+
+Si tenés un minuto, nos ayudaría un montón que dejes una reseña en Google. Solo te lleva 30 segundos y ayuda a que más personas nos conozcan:
+
+⭐ *Dejá tu reseña acá:*
+https://g.page/r/[TU_LINK_GOOGLE]/review
+
+¡Gracias de verdad, [NOMBRE]! 🙏🌿</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 8C — Si pone 1, 2 o 3 estrellas</div>
+Gracias por contarnos, [NOMBRE] 🙏 Lo tomamos muy en serio.
+
+¿Podés contarnos qué pasó? Queremos mejorar y resolver cualquier inconveniente que hayas tenido 💚
+
+_[ASIGNAR AL AGENTE — el empleado debe atender esto personalmente]_</div>
+
+    <div class="texto-copiable"><div class="label">MENSAJE 8D — Cupón de descuento para segunda compra (opcional, muy recomendado)</div>
+¡Ah, una última cosa! 🎁
+
+Por ser cliente de NutriDiet Market tenés un *10% de descuento* en tu próxima compra.
+
+🏷️ Usá el código: *NUTRI10*
+_(Válido por 30 días, solo por WhatsApp)_
+
+¡Esperamos verte pronto! 🌿💚</div>
+  </div>
+
+  <!-- FLUJO 9: EMPLEADO -->
+  <div class="seccion" id="flujo-empleado">
+    <h2>👤 Flujo 9 — Lo que hace el empleado en Wati</h2>
+    <p class="seccion-intro">Con este sistema el empleado tiene UN solo panel donde ve todo. No necesita hacer nada hasta que llega un pedido confirmado. Acá está exactamente qué hace y cuándo.</p>
+
+    <h3>El panel del empleado en Wati (vista de chats)</h3>
+    <div class="tip verde">
+      <span class="icono">🖥️</span>
+      <div>Wati tiene una vista de chats similar a WhatsApp Web. El empleado ve la lista de conversaciones, puede filtrar por etiqueta (ej: ver solo los "Pago confirmado") y responder desde ahí. No necesita el teléfono.</div>
+    </div>
+
+    <table>
+      <tr><th>Cuándo</th><th>Qué hace el empleado</th><th>Tiempo aprox.</th></tr>
+      <tr>
+        <td>Llega comprobante de pago</td>
+        <td>Verifica el pago en la app del banco o Mercado Pago. Si está bien, envía mensaje 4F (confirmación). Cambia etiqueta a "Pago confirmado".</td>
+        <td>2-3 minutos</td>
+      </tr>
+      <tr>
+        <td>Preparar el pedido</td>
+        <td>Arma el pedido en el local según el resumen que mandó el bot. (No tiene que releer todo el chat, el resumen está en el mensaje 4E)</td>
+        <td>Variable</td>
+      </tr>
+      <tr>
+        <td>Despachar el pedido</td>
+        <td>Entrega en ShipNow. Con el número de tracking, envía mensaje 4G al cliente. Cambia etiqueta a "Enviado".</td>
+        <td>2 minutos</td>
+      </tr>
+      <tr>
+        <td>Cliente pone 1-3 estrellas (post-venta)</td>
+        <td>Lee el problema, lo atiende personalmente. Es el único caso donde el empleado tiene que leer y pensar la respuesta.</td>
+        <td>5-10 minutos</td>
+      </tr>
+      <tr>
+        <td>Alguien pide hablar con una persona</td>
+        <td>El bot le avisa al empleado. El empleado responde normalmente por el panel de Wati.</td>
+        <td>Variable</td>
+      </tr>
+      <tr>
+        <td>Bot no entendió 2 veces</td>
+        <td>El bot asigna el chat al empleado automáticamente. El empleado ve el historial completo y puede responder desde donde quedó.</td>
+        <td>Variable</td>
+      </tr>
+    </table>
+
+    <h3>Mensajes que el empleado necesita mandar a mano</h3>
+    <p style="font-size:13px;color:var(--gris);margin-bottom:12px">Estos 3 mensajes los puede mandar con un clic desde las respuestas rápidas de Wati. No tiene que escribirlos:</p>
+
+    <div class="texto-copiable"><div class="label">RESPUESTA RÁPIDA — /confirmar (para cuando verifica el pago)</div>
+✅ *¡Pago confirmado, [NOMBRE]!*
+
+Tu pedido ya está en preparación 📦 Te avisamos cuando lo despachemos.
+
+*#[PEDIDO] — [PRODUCTOS]*
+📍 [DIRECCIÓN]
+
+¡Gracias por elegirnos! 💚🌿</div>
+
+    <div class="texto-copiable"><div class="label">RESPUESTA RÁPIDA — /despachar (para cuando envían el pedido)</div>
+🚚 *¡Tu pedido fue despachado, [NOMBRE]!*
+
+*Seguimiento:* [TRACKING]
+*Rastrealo en:* www.shipnow.com.ar
+
+Tiempo estimado:
+• La Plata / GBA: 24-48hs hábiles
+• Interior: 3-5 días hábiles
+
+¡Que disfrutes tus productos! 🌿💚</div>
+
+    <div class="texto-copiable"><div class="label">RESPUESTA RÁPIDA — /listo (para cuando el pedido de retiro en tienda está listo)</div>
+¡Hola, [NOMBRE]! 🎉 Tu pedido está *listo para retirar* 📦
+
+📍 *Av. 7 e/34 y 35 nº 136, La Plata*
+🕘 Lun-Vie: 9:00-20:00 / Sáb: 10:00-19:00
+
+¡Te esperamos! 💚🌿</div>
+
+    <h3>Checklist diario del empleado (5 minutos al día)</h3>
+    <ul style="list-style:none;padding:0;margin:8px 0">
+      <li style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--gris-borde);font-size:13px"><span>☐</span> Revisar chats con etiqueta "Esperando pago" — verificar si llegaron comprobantes</li>
+      <li style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--gris-borde);font-size:13px"><span>☐</span> Revisar chats con etiqueta "Pago confirmado" — preparar y despachar pedidos</li>
+      <li style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--gris-borde);font-size:13px"><span>☐</span> Revisar chats asignados a agente humano — responder consultas que el bot no pudo</li>
+      <li style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--gris-borde);font-size:13px"><span>☐</span> Revisar post-ventas con calificación baja (1-3 estrellas) — resolver el problema</li>
+      <li style="display:flex;gap:8px;padding:8px 0;font-size:13px"><span>☐</span> Actualizar precios en el catálogo si hubo cambios</li>
+    </ul>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="seccion">
+    <h2>🗂️ Resumen — Todos los mensajes de un vistazo</h2>
+    <table>
+      <tr><th>Código</th><th>Mensaje</th><th>Lo envía</th></tr>
+      <tr><td>1A</td><td>Bienvenida con menú de opciones</td><td>🤖 Bot</td></tr>
+      <tr><td>1B</td><td>Mensaje de ausencia (fuera de horario)</td><td>🤖 Bot</td></tr>
+      <tr><td>1C</td><td>No entendí (1ra vez)</td><td>🤖 Bot</td></tr>
+      <tr><td>1D</td><td>No entendí (2da vez, pasa a humano)</td><td>🤖 Bot</td></tr>
+      <tr><td>2A</td><td>Mostrar catálogo + categorías</td><td>🤖 Bot</td></tr>
+      <tr><td>2B</td><td>Si el cliente dice qué busca</td><td>🤖 Bot</td></tr>
+      <tr><td>2C</td><td>Pedir recomendación (preguntar objetivo)</td><td>🤖 Bot</td></tr>
+      <tr><td>3A</td><td>Inicio del pedido</td><td>🤖 Bot</td></tr>
+      <tr><td>3B</td><td>Confirmar productos y total</td><td>🤖 Bot</td></tr>
+      <tr><td>3C</td><td>Envío o retiro en tienda</td><td>🤖 Bot</td></tr>
+      <tr><td>3D</td><td>Pedir dirección de envío</td><td>🤖 Bot</td></tr>
+      <tr><td>3E</td><td>Confirmar retiro en tienda</td><td>🤖 Bot</td></tr>
+      <tr><td>3F</td><td>Pedir nombre y apellido</td><td>🤖 Bot</td></tr>
+      <tr><td>3G</td><td>Mostrar opciones de pago</td><td>🤖 Bot</td></tr>
+      <tr><td>4A</td><td>Datos de transferencia bancaria</td><td>🤖 Bot</td></tr>
+      <tr><td>4B</td><td>Datos de Mercado Pago</td><td>🤖 Bot</td></tr>
+      <tr><td>4C</td><td>Datos de Nave</td><td>🤖 Bot</td></tr>
+      <tr><td>4D</td><td>Efectivo en tienda</td><td>🤖 Bot</td></tr>
+      <tr><td>4E</td><td>Acuse de recibo del comprobante</td><td>🤖 Bot</td></tr>
+      <tr><td>4F</td><td>Pago confirmado + en preparación</td><td>👤 Empleado</td></tr>
+      <tr><td>4G</td><td>Pedido despachado + tracking</td><td>👤 Empleado</td></tr>
+      <tr><td>5A</td><td>Información general de envíos</td><td>🤖 Bot</td></tr>
+      <tr><td>5B</td><td>Costo de envío a código postal</td><td>🤖 Bot</td></tr>
+      <tr><td>5C</td><td>Información de mínimo de compra</td><td>🤖 Bot</td></tr>
+      <tr><td>6A</td><td>Horarios y dirección del local</td><td>🤖 Bot</td></tr>
+      <tr><td>7A</td><td>Reactivación a las 2 horas</td><td>🤖 Bot</td></tr>
+      <tr><td>7B</td><td>Si retoma el pedido abandonado</td><td>🤖 Bot</td></tr>
+      <tr><td>7C</td><td>Segunda reactivación (24 horas, última)</td><td>🤖 Bot</td></tr>
+      <tr><td>8A</td><td>Post-venta (48hs): pedir calificación</td><td>🤖 Bot</td></tr>
+      <tr><td>8B</td><td>Si pone 4-5 estrellas: pedir reseña Google</td><td>🤖 Bot</td></tr>
+      <tr><td>8C</td><td>Si pone 1-3 estrellas: derivar a empleado</td><td>🤖 Bot</td></tr>
+      <tr><td>8D</td><td>Cupón de descuento segunda compra</td><td>🤖 Bot</td></tr>
+    </table>
+
+    <div class="tip verde">
+      <span class="icono">🎯</span>
+      <div><strong>Resultado final:</strong> De 34 mensajes totales, el empleado solo escribe 2 a mano (4F confirmación de pago y 4G despacho). El resto lo hace el bot. Y esos 2 los tiene como respuestas rápidas para mandar con un clic.</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Flujos y textos del bot WhatsApp · NutriDiet Market · nutridietmarket.com.ar</p>
+    <p style="margin-top:4px">Elaborado el 29 de abril de 2026 · Adaptar precios, CBU, alias y links antes de implementar.</p>
+  </div>
+
+</div>
+</body>
+</html>

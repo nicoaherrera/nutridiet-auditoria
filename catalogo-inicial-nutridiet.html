@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo Inicial — NutriDiet Market</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root {
+    --verde: #2d7a4f;
+    --verde-claro: #e8f5ee;
+    --verde-wa: #128C7E;
+    --gris: #6b7280;
+    --gris-claro: #f9fafb;
+    --gris-borde: #e5e7eb;
+    --texto: #111827;
+    --amarillo: #fef9c3;
+    --azul-claro: #eff6ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.6; color: var(--texto); background: #fff; }
+  .page { max-width: 960px; margin: 0 auto; padding: 40px 48px; }
+
+  .portada {
+    background: linear-gradient(135deg, var(--verde) 0%, #1a5c37 100%);
+    color: white; padding: 52px 48px 44px;
+    border-radius: 0 0 24px 24px; margin-bottom: 40px;
+  }
+  .portada .badge { display: inline-block; background: rgba(255,255,255,0.2); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .portada h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+  .portada .sub { font-size: 15px; opacity: 0.85; margin-bottom: 28px; }
+  .portada .meta { display: flex; gap: 24px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; font-size: 12px; opacity: 0.85; }
+
+  .tip { display: flex; gap: 12px; padding: 14px 16px; border-radius: 10px; margin: 12px 0 24px; font-size: 13px; line-height: 1.6; }
+  .tip.verde { background: var(--verde-claro); border-left: 4px solid var(--verde); }
+  .tip.amarillo { background: var(--amarillo); border-left: 4px solid #f59e0b; }
+  .tip.azul { background: var(--azul-claro); border-left: 4px solid #2563eb; }
+  .tip .icono { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  .categoria-header {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--verde); color: white;
+    padding: 12px 20px; border-radius: 10px;
+    margin: 32px 0 16px; font-size: 16px; font-weight: 800;
+  }
+  .categoria-header .emoji { font-size: 22px; }
+  .categoria-header .conteo { margin-left: auto; font-size: 12px; opacity: 0.8; font-weight: 600; }
+
+  /* TARJETA DE PRODUCTO */
+  .productos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 8px; }
+  .producto {
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px; padding: 16px;
+    background: white;
+  }
+  .producto .prod-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .producto .prod-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--verde-claro); color: var(--verde);
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .producto .prod-nombre { font-size: 14px; font-weight: 700; line-height: 1.3; flex: 1; }
+  .producto .prod-precio {
+    font-size: 15px; font-weight: 800; color: var(--verde);
+    background: var(--verde-claro); padding: 3px 10px;
+    border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+  }
+  .producto .prod-precio.placeholder { color: var(--gris); background: var(--gris-claro); border: 1px dashed var(--gris-borde); }
+  .producto .prod-desc { font-size: 12px; color: var(--gris); line-height: 1.55; margin-bottom: 10px; }
+  .producto .prod-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 20px;
+  }
+  .tag-vegano { background: #dcfce7; color: #166534; }
+  .tag-sinazucar { background: #e0f2fe; color: #0369a1; }
+  .tag-sintacc { background: #fef3c7; color: #92400e; }
+  .tag-proteico { background: #fce7f3; color: #9d174d; }
+  .tag-organico { background: #d1fae5; color: #065f46; }
+  .tag-keto { background: #ede9fe; color: #5b21b6; }
+  .tag-bazar { background: #fff7ed; color: #c2410c; }
+  .tag-cosmetica { background: #fdf4ff; color: #7e22ce; }
+
+  /* TABLA DE CARGA */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 12px 0 24px; border: 1px solid var(--gris-borde); border-radius: 10px; overflow: hidden; }
+  th { background: var(--verde); color: white; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px; text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--gris-borde); vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--gris-claro); }
+  td.check { text-align: center; font-size: 16px; }
+
+  /* INSTRUCCIONES WA */
+  .instruccion { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--gris-borde); border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+  .instruccion .num { width: 24px; height: 24px; border-radius: 50%; background: var(--verde); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  h2 { font-size: 19px; font-weight: 800; color: var(--verde); padding-bottom: 8px; border-bottom: 2px solid var(--verde-claro); margin-bottom: 8px; }
+  .seccion { margin-bottom: 44px; }
+
+  .footer { margin-top: 50px; padding-top: 18px; border-top: 1px solid var(--gris-borde); text-align: center; font-size: 11px; color: var(--gris); }
+
+  @media print {
+    body { font-size: 12px; }
+    .portada { -webkit-print-color-adjust: exact; print-color-adjust: exact; border-radius: 0; }
+    .categoria-header, .tag, .producto .prod-precio, .tip, th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { padding: 24px 32px; }
+    .categoria-header { page-break-after: avoid; }
+    .productos-grid { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="portada">
+  <div class="badge">📦 Catálogo Inicial</div>
+  <h1>30 Productos para arrancar</h1>
+  <div class="sub">Selección de los productos más vendidos para cargar en WhatsApp Business y en la tienda online. Completar precios antes de publicar.</div>
+  <div class="meta">
+    <span>📱 WhatsApp Business → Catálogo</span>
+    <span>🌐 Tienda online nutridietmarket.com.ar</span>
+    <span>📅 Versión: Abril 2026</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="tip amarillo">
+    <span class="icono">⚠️</span>
+    <div><strong>Antes de publicar:</strong> Completar el precio de cada producto marcado con "$ COMPLETAR". Los precios sugeridos son referencias orientativas del mercado Argentina 2026 — ajustar según tu lista de precios actual. Los productos con precio fijo son estimaciones que deben verificarse.</div>
+  </div>
+
+  <div class="tip verde">
+    <span class="icono">💡</span>
+    <div><strong>Criterio de selección:</strong> Estos 30 productos cubren las 4 categorías del negocio y fueron elegidos por ser los tipos más buscados en el rubro. Priorizá los que más vendés en el local físico. Los que no tenés en stock, no los cargues todavía.</div>
+  </div>
+
+  <!-- ==================== CATEGORÍA 1: ALIMENTOS ==================== -->
+  <div class="categoria-header">
+    <span class="emoji">🥦</span>
+    Alimentos Naturales
+    <span class="conteo">12 productos</span>
+  </div>
+  <div class="productos-grid">
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">1</div>
+        <div class="prod-nombre">Granola Artesanal Sin Azúcar</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Granola horneada artesanalmente con avena, frutos secos, semillas de girasol y coco. Sin azúcar añadida. 250g</div>
+      <div class="prod-tags">
+        <span class="tag tag-sinazucar">Sin azúcar</span>
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">2</div>
+        <div class="prod-nombre">Mix de Frutos Secos Premium</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Almendras, nueces, maníes y pasas de uva. Sin sal ni aceites agregados. 200g ideal para llevar.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+        <span class="tag tag-keto">Keto</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">3</div>
+        <div class="prod-nombre">Semillas de Chía Orgánica</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Semillas de chía 100% orgánica, rica en Omega 3 y fibra. Ideal para smoothies, yogures y recetas. 500g.</div>
+      <div class="prod-tags">
+        <span class="tag tag-organico">Orgánico</span>
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">4</div>
+        <div class="prod-nombre">Harina de Almendras</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Harina de almendras finamente molida, sin cáscara. Perfecta para repostería keto, sin TACC y baja en carbohidratos. 500g.</div>
+      <div class="prod-tags">
+        <span class="tag tag-sintacc">Sin TACC</span>
+        <span class="tag tag-keto">Keto</span>
+        <span class="tag tag-vegano">Vegano</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">5</div>
+        <div class="prod-nombre">Pasta de Maní Natural</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">100% maní sin sal, sin azúcar, sin aceite añadido. Solo maní. Textura cremosa. 380g. Fuente de proteína vegetal.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-sinazucar">Sin azúcar</span>
+        <span class="tag tag-proteico">Proteico</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">6</div>
+        <div class="prod-nombre">Yerba Orgánica Certificada</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Yerba mate orgánica certificada, sin agroquímicos. Cosecha sustentable. 500g. Con hoja y palo seleccionado.</div>
+      <div class="prod-tags">
+        <span class="tag tag-organico">Orgánico</span>
+        <span class="tag tag-vegano">Vegano</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">7</div>
+        <div class="prod-nombre">Endulzante Natural de Stevia</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Stevia pura en polvo, sin mezclas, sin maltodextrina. 0 calorías. 100g. Apto diabéticos. Equivale a 7x el dulzor del azúcar.</div>
+      <div class="prod-tags">
+        <span class="tag tag-sinazucar">Sin azúcar</span>
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-keto">Keto</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">8</div>
+        <div class="prod-nombre">Aceite de Coco Prensado en Frío</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Aceite de coco virgen extra, prensado en frío, sin refinado. 500ml. Ideal para cocinar, cosmética capilar y facial.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-keto">Keto</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">9</div>
+        <div class="prod-nombre">Snack de Garbanzo Tostado</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Garbanzos tostados crocantes con sal de mar y especias. Alto en proteína y fibra. 150g. El snack saludable para el trabajo.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-proteico">Proteico</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">10</div>
+        <div class="prod-nombre">Cacao Puro en Polvo 100%</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Cacao en polvo puro sin azúcar, 100% natural. Ideal para smoothies, budines sin azúcar y bebidas calientes. 250g.</div>
+      <div class="prod-tags">
+        <span class="tag tag-sinazucar">Sin azúcar</span>
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-organico">Orgánico</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">11</div>
+        <div class="prod-nombre">Avena Arrollada Fina Orgánica</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Avena arrollada fina, orgánica y certificada sin TACC. Para porridge, granolas caseras y batidos. 500g.</div>
+      <div class="prod-tags">
+        <span class="tag tag-organico">Orgánico</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+        <span class="tag tag-vegano">Vegano</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">12</div>
+        <div class="prod-nombre">Chocolate 85% Cacao Sin Azúcar</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Tableta de chocolate negro 85% cacao, sin azúcar añadida, endulzado con stevia. 80g. Apto diabéticos y keto.</div>
+      <div class="prod-tags">
+        <span class="tag tag-sinazucar">Sin azúcar</span>
+        <span class="tag tag-keto">Keto</span>
+        <span class="tag tag-vegano">Vegano</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== CATEGORÍA 2: SUPLEMENTOS ==================== -->
+  <div class="categoria-header">
+    <span class="emoji">💊</span>
+    Suplementos y Nutrición
+    <span class="conteo">8 productos</span>
+  </div>
+  <div class="productos-grid">
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">13</div>
+        <div class="prod-nombre">Proteína Whey Vainilla</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Proteína de suero de leche sabor vainilla. 24g de proteína por porción. 1kg. Ideal para post-entreno y recuperación muscular.</div>
+      <div class="prod-tags">
+        <span class="tag tag-proteico">Proteico</span>
+        <span class="tag tag-sinazucar">Sin azúcar</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">14</div>
+        <div class="prod-nombre">Proteína Vegana Chocolate</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Mezcla de proteína de guisante y arroz sabor chocolate. 22g de proteína por porción. Sin lactosa. 800g.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-proteico">Proteico</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">15</div>
+        <div class="prod-nombre">Colágeno Hidrolizado Natural</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Colágeno hidrolizado tipo I y III, sin sabor. 10g por porción. 300g. Para piel, articulaciones y cabello. Se disuelve en frío.</div>
+      <div class="prod-tags">
+        <span class="tag tag-proteico">Proteico</span>
+        <span class="tag tag-sinazucar">Sin azúcar</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">16</div>
+        <div class="prod-nombre">Magnesio Quelado 400mg</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Magnesio bisglicinato quelado, alta biodisponibilidad. 400mg. 60 cápsulas. Para calambres, sueño y relajación muscular.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">17</div>
+        <div class="prod-nombre">Vitamina D3 + K2</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Vitamina D3 2000UI con K2 MK-7. Sinergia para absorción de calcio e inmunidad. 60 cápsulas blandas.</div>
+      <div class="prod-tags">
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">18</div>
+        <div class="prod-nombre">Omega 3 — Aceite de Pescado</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Omega 3 de alta concentración, 1000mg EPA + DHA. 60 cápsulas. Certificado libre de metales pesados. Para corazón y cerebro.</div>
+      <div class="prod-tags">
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">19</div>
+        <div class="prod-nombre">Supergreens — Mezcla Verde</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Mezcla de espirulina, chlorella, hierba de trigo y moringa. Antioxidante y alcalinizante. 200g. 1 cucharada diaria en agua o smoothie.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-organico">Orgánico</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">20</div>
+        <div class="prod-nombre">Probiótico 10 Cepas</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Probiótico de 10 cepas, 10 billones UFC por cápsula. 30 cápsulas. Para microbiota, digestión e inmunidad. Requiere refrigeración.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-sintacc">Sin TACC</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== CATEGORÍA 3: COSMÉTICA ==================== -->
+  <div class="categoria-header">
+    <span class="emoji">🧴</span>
+    Cosmética Natural
+    <span class="conteo">5 productos</span>
+  </div>
+  <div class="productos-grid">
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">21</div>
+        <div class="prod-nombre">Shampoo Sólido Vegano</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Shampoo sólido sin sulfatos, sin siliconas, sin plástico. Apto cuero cabelludo sensible. Equivale a 2-3 shampoos líquidos. 60g.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-cosmetica">Cosmética</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">22</div>
+        <div class="prod-nombre">Desodorante Natural en Crema</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Desodorante natural sin aluminio ni parabenos. Base de bicarbonato, aceite de coco y manteca de karité. 60g. Unisex.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-cosmetica">Cosmética</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">23</div>
+        <div class="prod-nombre">Sérum Facial Vitamina C</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Sérum con vitamina C estabilizada al 15%, ácido hialurónico y extracto de rosa mosqueta. Anti-manchas y antienvejecimiento. 30ml.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-cosmetica">Cosmética</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">24</div>
+        <div class="prod-nombre">Aceite Rosa Mosqueta Puro</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Aceite de rosa mosqueta 100% puro, prensado en frío. Para cicatrices, manchas y regeneración celular. 30ml con gotero.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-cosmetica">Cosmética</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">25</div>
+        <div class="prod-nombre">Protector Solar Natural FPS 30</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Protector solar mineral con óxido de zinc. Sin químicos absorbentes. Tono universal. Apto pieles sensibles y niños. 100ml.</div>
+      <div class="prod-tags">
+        <span class="tag tag-vegano">Vegano</span>
+        <span class="tag tag-cosmetica">Cosmética</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== CATEGORÍA 4: NUTHOME ==================== -->
+  <div class="categoria-header">
+    <span class="emoji">🏡</span>
+    NutHome — Bazar Sustentable
+    <span class="conteo">5 productos</span>
+  </div>
+  <div class="productos-grid">
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">26</div>
+        <div class="prod-nombre">Bowl de Bambú Artesanal</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Bowl fabricado en bambú orgánico, 100% biodegradable. Ideal para smoothie bowls, ensaladas y granolas. Diámetro 15cm.</div>
+      <div class="prod-tags">
+        <span class="tag tag-bazar">Bazar</span>
+        <span class="tag tag-organico">Sustentable</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">27</div>
+        <div class="prod-nombre">Set de Pajitas de Acero Inox</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Set de 4 pajitas de acero inoxidable + cepillo limpiador. Reutilizables, sin BPA. Incluye bolsita de tela para guardar.</div>
+      <div class="prod-tags">
+        <span class="tag tag-bazar">Bazar</span>
+        <span class="tag tag-organico">Sustentable</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">28</div>
+        <div class="prod-nombre">Bolsas de Tela Reutilizables x3</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Set de 3 bolsas de tela de algodón orgánico de distintos tamaños. Para compras a granel, frutas y verduras. Lavables.</div>
+      <div class="prod-tags">
+        <span class="tag tag-bazar">Bazar</span>
+        <span class="tag tag-organico">Orgánico</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">29</div>
+        <div class="prod-nombre">Vela Aromática de Soja Natural</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Vela artesanal de cera de soja con aceites esenciales naturales. Sin parafina ni fragancias sintéticas. 200g, 40hs de duración.</div>
+      <div class="prod-tags">
+        <span class="tag tag-bazar">Bazar</span>
+        <span class="tag tag-vegano">Vegano</span>
+      </div>
+    </div>
+
+    <div class="producto">
+      <div class="prod-header">
+        <div class="prod-num">30</div>
+        <div class="prod-nombre">Organizador de Cocina en Madera</div>
+        <div class="prod-precio placeholder">$ COMPLETAR</div>
+      </div>
+      <div class="prod-desc">Organizador modular de madera de pino para especias y semillas. 6 compartimentos. Ideal para cocinas naturistas. 25 x 15cm.</div>
+      <div class="prod-tags">
+        <span class="tag tag-bazar">Bazar</span>
+        <span class="tag tag-organico">Sustentable</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INSTRUCCIONES CARGA WA -->
+  <div class="seccion">
+    <h2>📱 Cómo cargar en WhatsApp Business paso a paso</h2>
+    <div class="tip azul">
+      <span class="icono">ℹ️</span>
+      <div>Podés cargar hasta 500 productos en el catálogo de WhatsApp Business. Empezá con estos 30 y después seguís agregando. Cada producto tarda unos 3 minutos en cargar si tenés la foto y el precio listos.</div>
+    </div>
+    <div class="instruccion"><div class="num">1</div><p>Abrí <strong>WhatsApp Business</strong> → tocá los 3 puntos ⋮ → <strong>Herramientas para la empresa</strong></p></div>
+    <div class="instruccion"><div class="num">2</div><p>Tocá <strong>Catálogo</strong> → <strong>Agregar nuevo artículo</strong> (ícono +)</p></div>
+    <div class="instruccion"><div class="num">3</div><p>Agregá <strong>al menos una foto</strong> del producto (podés usar las de Instagram — son tuyas). La foto debe ser cuadrada idealmente.</p></div>
+    <div class="instruccion"><div class="num">4</div><p>Completá el <strong>nombre</strong> exactamente como figura en esta guía (menos de 60 caracteres)</p></div>
+    <div class="instruccion"><div class="num">5</div><p>Completá el <strong>precio en ARS</strong> con tu precio actualizado</p></div>
+    <div class="instruccion"><div class="num">6</div><p>Pegá la <strong>descripción</strong> de esta guía (podés editarla para adaptarla a tu producto exacto)</p></div>
+    <div class="instruccion"><div class="num">7</div><p>En <strong>Código de artículo</strong> podés poner el número de esta guía (ej: "P001") para identificarlos internamente</p></div>
+    <div class="instruccion"><div class="num">8</div><p>Tocá <strong>Guardar</strong>. El producto queda publicado automáticamente en tu catálogo.</p></div>
+  </div>
+
+  <!-- TABLA RESUMEN -->
+  <div class="seccion">
+    <h2>📋 Tabla resumen para completar precios</h2>
+    <p style="font-size:13px;color:var(--gris);margin-bottom:12px">Usá esta tabla para anotar los precios antes de cargarlos. Completá la columna "Precio ARS" con tus precios reales.</p>
+    <table>
+      <tr><th>#</th><th>Producto</th><th>Categoría</th><th>Precio ARS</th><th>¿Cargado?</th></tr>
+      <tr><td>1</td><td>Granola Artesanal Sin Azúcar 250g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>2</td><td>Mix de Frutos Secos Premium 200g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>3</td><td>Semillas de Chía Orgánica 500g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>4</td><td>Harina de Almendras 500g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>5</td><td>Pasta de Maní Natural 380g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>6</td><td>Yerba Orgánica Certificada 500g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>7</td><td>Endulzante Natural de Stevia 100g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>8</td><td>Aceite de Coco Prensado en Frío 500ml</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>9</td><td>Snack de Garbanzo Tostado 150g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>10</td><td>Cacao Puro en Polvo 100% 250g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>11</td><td>Avena Arrollada Fina Orgánica 500g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>12</td><td>Chocolate 85% Cacao Sin Azúcar 80g</td><td>Alimentos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>13</td><td>Proteína Whey Vainilla 1kg</td><td>Suplementos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>14</td><td>Proteína Vegana Chocolate 800g</td><td>Suplementos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>15</td><td>Colágeno Hidrolizado Natural 300g</td><td>Suplementos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>16</td><td>Magnesio Quelado 400mg 60 cáps</td><td>Suplementos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>17</td><td>Vitamina D3 + K2 60 cáps</td><td>Suplementos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>18</td><td>Omega 3 Aceite de Pescado 60 cáps</td><td>Suplementos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>19</td><td>Supergreens Mezcla Verde 200g</td><td>Suplementos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>20</td><td>Probiótico 10 Cepas 30 cáps</td><td>Suplementos</td><td></td><td class="check">☐</td></tr>
+      <tr><td>21</td><td>Shampoo Sólido Vegano 60g</td><td>Cosmética</td><td></td><td class="check">☐</td></tr>
+      <tr><td>22</td><td>Desodorante Natural en Crema 60g</td><td>Cosmética</td><td></td><td class="check">☐</td></tr>
+      <tr><td>23</td><td>Sérum Facial Vitamina C 30ml</td><td>Cosmética</td><td></td><td class="check">☐</td></tr>
+      <tr><td>24</td><td>Aceite Rosa Mosqueta Puro 30ml</td><td>Cosmética</td><td></td><td class="check">☐</td></tr>
+      <tr><td>25</td><td>Protector Solar Natural FPS 30 100ml</td><td>Cosmética</td><td></td><td class="check">☐</td></tr>
+      <tr><td>26</td><td>Bowl de Bambú Artesanal</td><td>NutHome</td><td></td><td class="check">☐</td></tr>
+      <tr><td>27</td><td>Set Pajitas de Acero Inox x4</td><td>NutHome</td><td></td><td class="check">☐</td></tr>
+      <tr><td>28</td><td>Bolsas de Tela Reutilizables x3</td><td>NutHome</td><td></td><td class="check">☐</td></tr>
+      <tr><td>29</td><td>Vela Aromática de Soja Natural 200g</td><td>NutHome</td><td></td><td class="check">☐</td></tr>
+      <tr><td>30</td><td>Organizador de Cocina en Madera</td><td>NutHome</td><td></td><td class="check">☐</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    <p>Catálogo inicial NutriDiet Market · Versión Abril 2026 · Completar precios antes de publicar</p>
+  </div>
+
+</div>
+</body>
+</html>
