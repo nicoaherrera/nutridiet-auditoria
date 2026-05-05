@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bot WhatsApp con n8n — Guía Completa — NutriDiet Market</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root {
+    --verde: #2d7a4f;
+    --verde-claro: #e8f5ee;
+    --verde-wa: #25D366;
+    --verde-wa-dark: #128C7E;
+    --verde-wa-oscuro: #075E54;
+    --n8n: #ea4b71;
+    --n8n-claro: #fdf2f5;
+    --meta: #1877f2;
+    --meta-claro: #eff6ff;
+    --sheets: #0f9d58;
+    --sheets-claro: #e8f5e9;
+    --gris: #6b7280;
+    --gris-claro: #f9fafb;
+    --gris-borde: #e5e7eb;
+    --texto: #111827;
+    --naranja: #ea580c;
+    --naranja-claro: #fff7ed;
+    --amarillo-claro: #fefce8;
+    --morado: #7c3aed;
+    --morado-claro: #f5f3ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.65; color: var(--texto); background: #fff; }
+  .page { max-width: 960px; margin: 0 auto; padding: 40px 48px; }
+
+  /* PORTADA */
+  .portada {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: white; padding: 56px 48px 48px; border-radius: 0 0 24px 24px; margin-bottom: 44px;
+  }
+  .portada .badge { display: inline-block; background: rgba(255,255,255,0.15); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; }
+  .portada h1 { font-size: 32px; font-weight: 800; line-height: 1.2; margin-bottom: 10px; }
+  .portada .sub { font-size: 15px; opacity: 0.8; margin-bottom: 30px; max-width: 580px; line-height: 1.6; }
+  .portada .stack { display: flex; gap: 12px; flex-wrap: wrap; }
+  .portada .stack-item { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; }
+
+  /* ARQUITECTURA */
+  .arq-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 16px 0 24px; border: 1px solid var(--gris-borde); border-radius: 12px; overflow: hidden; }
+  .arq-item { padding: 16px 14px; text-align: center; border-right: 1px solid var(--gris-borde); }
+  .arq-item:last-child { border-right: none; }
+  .arq-item .arq-icon { font-size: 28px; margin-bottom: 6px; display: block; }
+  .arq-item .arq-nombre { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .arq-item .arq-desc { font-size: 11px; color: var(--gris); }
+  .arq-flecha { display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--gris); padding: 0 4px; }
+
+  /* FASES */
+  .fase-badge { display: inline-flex; align-items: center; gap: 8px; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; font-weight: 700; }
+  .fase-meta { background: var(--meta-claro); color: var(--meta); border: 1px solid #bfdbfe; }
+  .fase-n8n { background: var(--n8n-claro); color: var(--n8n); border: 1px solid #fbbdd0; }
+  .fase-sheets { background: var(--sheets-claro); color: var(--sheets); border: 1px solid #a7d7b8; }
+  .fase-flujo { background: var(--morado-claro); color: var(--morado); border: 1px solid #c4b5fd; }
+  .fase-test { background: var(--amarillo-claro); color: #854d0e; border: 1px solid #fde047; }
+
+  /* SECCIONES */
+  .seccion { margin-bottom: 48px; }
+  h2 { font-size: 20px; font-weight: 800; padding-bottom: 10px; border-bottom: 2px solid var(--gris-borde); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .seccion-intro { font-size: 13px; color: var(--gris); margin-bottom: 20px; line-height: 1.6; }
+  h3 { font-size: 14px; font-weight: 700; margin: 22px 0 10px; }
+  h4 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+
+  /* PASOS */
+  .paso { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px; padding: 14px 16px; border: 1px solid var(--gris-borde); border-radius: 10px; }
+  .paso .num { width: 30px; height: 30px; border-radius: 50%; color: white; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .num-meta { background: var(--meta); }
+  .num-n8n { background: var(--n8n); }
+  .num-sheets { background: var(--sheets); }
+  .num-flujo { background: var(--morado); }
+  .num-verde { background: var(--verde); }
+  .paso p { font-size: 13px; color: #374151; line-height: 1.6; }
+  .paso code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; color: #1f2937; }
+  .paso strong { color: var(--texto); }
+
+  /* TIPS */
+  .tip { display: flex; gap: 12px; padding: 13px 16px; border-radius: 10px; margin: 10px 0 16px; font-size: 13px; line-height: 1.6; }
+  .tip.verde { background: var(--verde-claro); border-left: 4px solid var(--verde); }
+  .tip.meta { background: var(--meta-claro); border-left: 4px solid var(--meta); }
+  .tip.n8n { background: var(--n8n-claro); border-left: 4px solid var(--n8n); }
+  .tip.naranja { background: var(--naranja-claro); border-left: 4px solid var(--naranja); }
+  .tip.morado { background: var(--morado-claro); border-left: 4px solid var(--morado); }
+  .tip.sheets { background: var(--sheets-claro); border-left: 4px solid var(--sheets); }
+  .tip .icono { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  /* CÓDIGO */
+  .codigo { background: #1e293b; color: #e2e8f0; border-radius: 10px; padding: 16px 20px; margin: 10px 0 16px; font-family: 'Courier New', monospace; font-size: 12.5px; line-height: 1.8; white-space: pre-wrap; word-break: break-word; overflow-x: auto; }
+  .codigo .label { display: inline-block; background: var(--n8n); color: white; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 4px; margin-bottom: 10px; font-family: 'Inter', sans-serif; }
+  .codigo .label-meta { background: var(--meta); }
+  .codigo .label-sheets { background: var(--sheets); }
+  .codigo .label-verde { background: var(--verde); }
+  .codigo .comentario { color: #64748b; }
+  .codigo .string { color: #86efac; }
+  .codigo .clave { color: #93c5fd; }
+  .codigo .valor { color: #fca5a5; }
+
+  /* NODO N8N */
+  .nodo-n8n { border: 2px solid var(--gris-borde); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+  .nodo-n8n .nodo-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--gris-borde); background: var(--gris-claro); }
+  .nodo-n8n .nodo-tipo { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 2px 8px; border-radius: 4px; }
+  .tipo-webhook { background: #fef3c7; color: #92400e; }
+  .tipo-set { background: var(--meta-claro); color: var(--meta); }
+  .tipo-switch { background: var(--morado-claro); color: var(--morado); }
+  .tipo-http { background: #dcfce7; color: #166534; }
+  .tipo-sheets { background: var(--sheets-claro); color: var(--sheets); }
+  .tipo-if { background: var(--naranja-claro); color: var(--naranja); }
+  .tipo-function { background: var(--n8n-claro); color: var(--n8n); }
+  .nodo-n8n .nodo-titulo { font-size: 14px; font-weight: 700; }
+  .nodo-n8n .nodo-cuerpo { padding: 14px 16px; font-size: 13px; }
+  .nodo-n8n .nodo-cuerpo ul { margin-left: 16px; color: #374151; line-height: 2; }
+  .nodo-n8n .nodo-cuerpo code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; }
+
+  /* FLUJO VISUAL */
+  .flujo-visual { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 16px 0 8px; }
+  .fv-nodo { border-radius: 8px; padding: 10px 18px; width: 75%; text-align: center; font-size: 12.5px; font-weight: 600; border: 2px solid transparent; }
+  .fv-webhook { background: #fef3c7; border-color: #fde047; color: #713f12; }
+  .fv-proceso { background: var(--meta-claro); border-color: #93c5fd; color: #1e40af; }
+  .fv-decision { background: var(--morado-claro); border-color: #c4b5fd; color: #5b21b6; }
+  .fv-respuesta { background: var(--verde-claro); border-color: #86efac; color: var(--verde); }
+  .fv-sheets { background: var(--sheets-claro); border-color: #6ee7b7; color: #065f46; }
+  .fv-manual { background: var(--naranja-claro); border-color: #fed7aa; color: #9a3412; }
+  .fv-flecha { color: var(--gris); font-size: 16px; padding: 2px 0; line-height: 1; }
+  .fv-rama { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 85%; margin: 4px 0; }
+  .fv-rama-nodo { border-radius: 6px; padding: 8px 10px; font-size: 11px; font-weight: 600; text-align: center; }
+
+  /* TABLA */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0 20px; border: 1px solid var(--gris-borde); border-radius: 10px; overflow: hidden; }
+  th { background: #1e293b; color: white; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 14px; text-align: left; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--gris-borde); vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--gris-claro); }
+
+  /* SHEETS TABLA */
+  .sheets-tabla { background: white; border: 2px solid #34a853; border-radius: 10px; overflow: hidden; margin: 12px 0 20px; }
+  .sheets-tabla .sheets-header { background: #34a853; color: white; display: grid; grid-template-columns: 1.5fr 1.5fr 2fr 1.2fr; gap: 0; }
+  .sheets-tabla .sheets-header div { padding: 8px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-right: 1px solid rgba(255,255,255,0.3); }
+  .sheets-tabla .sheets-row { display: grid; grid-template-columns: 1.5fr 1.5fr 2fr 1.2fr; border-bottom: 1px solid #e5e7eb; font-size: 12px; }
+  .sheets-tabla .sheets-row div { padding: 8px 12px; border-right: 1px solid #e5e7eb; font-family: monospace; }
+  .sheets-tabla .sheets-row:last-child { border-bottom: none; }
+  .sheets-tabla .sheets-row:nth-child(even) div { background: #f0fdf4; }
+
+  /* INDICE */
+  .indice { background: var(--gris-claro); border: 1px solid var(--gris-borde); border-radius: 12px; padding: 20px 24px; margin-bottom: 36px; }
+  .indice h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gris); margin-bottom: 12px; }
+  .indice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .indice a { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151; text-decoration: none; padding: 7px 10px; border-radius: 6px; font-weight: 500; }
+  .indice a:hover { background: white; }
+  .indice .num { width: 24px; height: 24px; background: #1e293b; color: white; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--gris-borde); text-align: center; font-size: 11px; color: var(--gris); }
+
+  @media print {
+    body { font-size: 12px; }
+    .portada, th, .nodo-n8n .nodo-header, .fase-badge, .tip, .arq-item, .sheets-tabla .sheets-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { padding: 24px 32px; }
+    h2 { page-break-after: avoid; }
+    .seccion { page-break-inside: avoid; }
+    .codigo { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="portada">
+  <div class="badge">🤖 Implementación técnica</div>
+  <h1>Bot WhatsApp con n8n<br>+ Meta Cloud API</h1>
+  <div class="sub">Guía completa para construir el bot de NutriDiet Market gratis (o casi). Los flujos y textos ya están armados — acá conectamos todo para que funcione solo.</div>
+  <div class="stack">
+    <div class="stack-item">🔵 Meta WhatsApp Cloud API — gratis hasta 1.000 conv/mes</div>
+    <div class="stack-item">🩷 n8n — cerebro del bot, gratis self-hosted</div>
+    <div class="stack-item">🟢 Google Sheets — memoria del bot, gratis</div>
+    <div class="stack-item">🚂 Railway.app — hosting n8n, ~$0-5/mes</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- INDICE -->
+  <div class="indice">
+    <h3>Contenido — leer en orden</h3>
+    <div class="indice-grid">
+      <a href="#arquitectura"><div class="num">0</div> Cómo funciona todo junto</a>
+      <a href="#prereqs"><div class="num">P</div> Qué necesitás antes de empezar</a>
+      <a href="#meta"><div class="num">1</div> Fase 1 — Configurar Meta Cloud API</a>
+      <a href="#n8n"><div class="num">2</div> Fase 2 — Instalar n8n en Railway</a>
+      <a href="#sheets"><div class="num">3</div> Fase 3 — Google Sheets (memoria del bot)</a>
+      <a href="#webhook"><div class="num">4</div> Fase 4 — Conectar el webhook</a>
+      <a href="#flujo-principal"><div class="num">5</div> Fase 5 — Construir el flujo principal</a>
+      <a href="#flujo-pedido"><div class="num">6</div> Fase 6 — Flujo de pedido completo</a>
+      <a href="#flujo-info"><div class="num">7</div> Fase 7 — Flujos de info (envíos, horarios)</a>
+      <a href="#test"><div class="num">8</div> Fase 8 — Probar que funciona</a>
+    </div>
+  </div>
+
+  <!-- ARQUITECTURA -->
+  <div class="seccion" id="arquitectura">
+    <h2>🗺️ 0. Cómo funciona todo junto</h2>
+    <p class="seccion-intro">Son 4 piezas que se comunican entre sí. Una vez conectadas, el bot funciona solo sin tocar nada más.</p>
+
+    <div class="arq-grid">
+      <div class="arq-item">
+        <span class="arq-icon">📱</span>
+        <div class="arq-nombre" style="color:var(--verde-wa-dark)">WhatsApp</div>
+        <div class="arq-desc">El cliente escribe. Meta lo recibe y lo manda a n8n.</div>
+      </div>
+      <div class="arq-item">
+        <span class="arq-icon">🔵</span>
+        <div class="arq-nombre" style="color:var(--meta)">Meta Cloud API</div>
+        <div class="arq-desc">Recibe y envía mensajes. El puente entre WhatsApp y tu bot.</div>
+      </div>
+      <div class="arq-item">
+        <span class="arq-icon">🩷</span>
+        <div class="arq-nombre" style="color:var(--n8n)">n8n</div>
+        <div class="arq-desc">Cerebro del bot. Lee el mensaje, decide qué responder, lo envía.</div>
+      </div>
+      <div class="arq-item">
+        <span class="arq-icon">🟢</span>
+        <div class="arq-nombre" style="color:var(--sheets)">Google Sheets</div>
+        <div class="arq-desc">Memoria. Guarda en qué paso está cada cliente en la conversación.</div>
+      </div>
+    </div>
+
+    <h3>El viaje de un mensaje</h3>
+    <div class="flujo-visual">
+      <div class="fv-nodo fv-webhook">👤 Cliente escribe "Hola" en WhatsApp</div>
+      <div class="fv-flecha">↓</div>
+      <div class="fv-nodo fv-proceso">🔵 Meta Cloud API recibe el mensaje y lo envía al webhook de n8n</div>
+      <div class="fv-flecha">↓</div>
+      <div class="fv-nodo fv-sheets">🟢 n8n consulta Google Sheets: ¿en qué estado está este número?</div>
+      <div class="fv-flecha">↓</div>
+      <div class="fv-nodo fv-decision">🩷 n8n decide qué responder según el estado y el mensaje</div>
+      <div class="fv-flecha">↓</div>
+      <div class="fv-nodo fv-respuesta">🔵 n8n llama a Meta API para enviar la respuesta</div>
+      <div class="fv-flecha">↓</div>
+      <div class="fv-nodo fv-sheets">🟢 n8n actualiza el estado del cliente en Google Sheets</div>
+      <div class="fv-flecha">↓</div>
+      <div class="fv-nodo fv-webhook">📱 Cliente recibe: "¡Hola! Bienvenido a NutriDiet Market..."</div>
+    </div>
+
+    <div class="tip verde">
+      <span class="icono">⏱️</span>
+      <div>Todo este proceso tarda menos de 1 segundo. El cliente recibe la respuesta casi instantáneamente.</div>
+    </div>
+  </div>
+
+  <!-- PREREQS -->
+  <div class="seccion" id="prereqs">
+    <h2>📋 P. Qué necesitás antes de empezar</h2>
+    <table>
+      <tr><th>Qué</th><th>Dónde conseguirlo</th><th>Costo</th></tr>
+      <tr><td><strong>Cuenta de Facebook/Meta Business</strong></td><td>business.facebook.com — con el Facebook del negocio</td><td>Gratis</td></tr>
+      <tr><td><strong>Número de teléfono exclusivo</strong></td><td>Un número que NO esté registrado en WhatsApp. Puede ser un chip nuevo o una línea VoIP.</td><td>Variable</td></tr>
+      <tr><td><strong>Cuenta de Google</strong></td><td>Para Google Sheets — cualquier cuenta de Gmail</td><td>Gratis</td></tr>
+      <tr><td><strong>Cuenta en Railway.app</strong></td><td>railway.app — registrarse con GitHub</td><td>Gratis / $5/mes</td></tr>
+      <tr><td><strong>Cuenta en GitHub</strong></td><td>Ya la tienen: nicoaherrera</td><td>Gratis</td></tr>
+    </table>
+
+    <div class="tip naranja">
+      <span class="icono">⚠️</span>
+      <div><strong>El número de teléfono es clave:</strong> No puede estar registrado en WhatsApp regular o WhatsApp Business App. Si querés migrar el número actual (+54 9 221 699-3344) al bot, primero hay que eliminarlo de la app. Lo más fácil para probar: conseguir un chip nuevo de cualquier operadora (~$1.000 ARS) y usarlo solo para el bot.</div>
+    </div>
+  </div>
+
+  <!-- FASE 1: META -->
+  <div class="seccion" id="meta">
+    <h2>🔵 Fase 1 — Configurar Meta WhatsApp Cloud API</h2>
+    <div class="fase-badge fase-meta">🔵 Meta for Developers — Tiempo estimado: 30-45 minutos</div>
+
+    <h3>Paso 1.1 — Crear la app en Meta for Developers</h3>
+    <div class="paso"><div class="num num-meta">1</div><p>Andá a <strong>developers.facebook.com</strong> → clic en <strong>"Mis apps"</strong> → <strong>"Crear app"</strong>.</p></div>
+    <div class="paso"><div class="num num-meta">2</div><p>En "Tipo de app" elegí <strong>"Empresa" (Business)</strong>. Clic en Siguiente.</p></div>
+    <div class="paso"><div class="num num-meta">3</div><p>Nombre de la app: <code>NutriDiet-Bot</code>. Asociala a tu cuenta de Meta Business. Clic en <strong>"Crear app"</strong>.</p></div>
+
+    <h3>Paso 1.2 — Agregar WhatsApp a la app</h3>
+    <div class="paso"><div class="num num-meta">4</div><p>En el panel de la app buscá el producto <strong>"WhatsApp"</strong> y clic en <strong>"Configurar"</strong>.</p></div>
+    <div class="paso"><div class="num num-meta">5</div><p>Te va a pedir asociar una <strong>cuenta de WhatsApp Business</strong>. Si no tenés, creala ahí mismo con el nombre "NutriDiet Market".</p></div>
+    <div class="paso"><div class="num num-meta">6</div><p>Meta te da un <strong>número de prueba</strong> con 5 números de destino para testear. Usalo para probar antes de conectar el número real.</p></div>
+
+    <h3>Paso 1.3 — Obtener los datos que necesita n8n</h3>
+    <div class="paso"><div class="num num-meta">7</div><p>En el menú izquierdo andá a <strong>WhatsApp → Configuración de la API</strong>. Ahí encontrás:<br><br>
+    • <strong>Token de acceso temporal</strong> (empieza con <code>EAA...</code>) — lo necesitás para que n8n pueda enviar mensajes.<br>
+    • <strong>Phone Number ID</strong> — el ID numérico del número de WhatsApp.<br><br>
+    Copiá y guardá los dos en un bloc de notas.</p></div>
+
+    <div class="tip meta">
+      <span class="icono">ℹ️</span>
+      <div><strong>Token permanente:</strong> El token temporal dura 24hs. Para producción necesitás generar un <strong>System User Token</strong> que no vence. Andá a <strong>business.facebook.com → Configuración → Usuarios del sistema → Agregar → Dar permisos de WhatsApp</strong>. Esto lo hacés cuando todo esté funcionando.</div>
+    </div>
+
+    <h3>Paso 1.4 — Agregar tu número de destino para pruebas</h3>
+    <div class="paso"><div class="num num-meta">8</div><p>En <strong>WhatsApp → Configuración de la API</strong>, buscá <strong>"Para"</strong> y agregá tu número personal como número de prueba. Meta te manda un código por WhatsApp para verificarlo.</p></div>
+    <div class="paso"><div class="num num-meta">9</div><p>Hacé una prueba: clic en <strong>"Enviar mensaje"</strong>. Deberías recibir un "Hello World" en tu WhatsApp. Si llegó, la API está funcionando.</p></div>
+  </div>
+
+  <!-- FASE 2: N8N -->
+  <div class="seccion" id="n8n">
+    <h2>🩷 Fase 2 — Instalar n8n en Railway.app</h2>
+    <div class="fase-badge fase-n8n">🩷 Railway.app — Tiempo estimado: 20 minutos</div>
+
+    <div class="tip n8n">
+      <span class="icono">💡</span>
+      <div>Railway te da $5 de crédito gratis por mes. n8n consume aproximadamente $3-5/mes en el tier más básico, así que en muchos casos sale gratis o casi. Si el bot crece mucho, son $5/mes de gasto real.</div>
+    </div>
+
+    <div class="paso"><div class="num num-n8n">1</div><p>Andá a <strong>railway.app</strong> → <strong>"Login with GitHub"</strong> → autenticarte con tu cuenta <code>nicoaherrera</code>.</p></div>
+    <div class="paso"><div class="num num-n8n">2</div><p>Clic en <strong>"New Project"</strong> → <strong>"Deploy from template"</strong>.</p></div>
+    <div class="paso"><div class="num num-n8n">3</div><p>En el buscador de templates escribí <code>n8n</code> → elegí el template oficial de n8n → clic en <strong>"Deploy"</strong>. Railway crea todo automáticamente en 2-3 minutos.</p></div>
+    <div class="paso"><div class="num num-n8n">4</div><p>Cuando termina, clic en el servicio de n8n → tab <strong>"Settings"</strong> → <strong>"Domains"</strong> → <strong>"Generate Domain"</strong>. Railway te da una URL pública como <code>nutridiet-n8n.up.railway.app</code>. <strong>Copiala</strong>, la vas a necesitar.</p></div>
+    <div class="paso"><div class="num num-n8n">5</div><p>Abrí esa URL en el navegador. Te pide crear una cuenta de n8n (es local, solo para vos). Registrate con tu email y una contraseña segura. Ya estás adentro del panel de n8n.</p></div>
+    <div class="paso"><div class="num num-n8n">6</div><p>En n8n, andá a <strong>Settings → n8n API</strong> → <strong>"Create API Key"</strong>. Guardá esa clave también.</p></div>
+  </div>
+
+  <!-- FASE 3: GOOGLE SHEETS -->
+  <div class="seccion" id="sheets">
+    <h2>🟢 Fase 3 — Google Sheets como memoria del bot</h2>
+    <div class="fase-badge fase-sheets">🟢 Google Sheets — Tiempo estimado: 10 minutos</div>
+
+    <p class="seccion-intro">El bot necesita recordar en qué paso está cada cliente. Si alguien lleva medio pedido y escribe otra cosa, el bot tiene que saber dónde retomar. Google Sheets cumple ese rol de "memoria" de forma gratuita y visual — podés ver en tiempo real todas las conversaciones.</p>
+
+    <div class="paso"><div class="num num-sheets">1</div><p>Abrí <strong>sheets.google.com</strong> → creá una planilla nueva → nombrala <code>NutriDiet Bot — Estados</code>.</p></div>
+    <div class="paso"><div class="num num-sheets">2</div><p>Creá estas <strong>5 columnas</strong> exactamente en la primera fila (mayúsculas y sin espacios):</p></div>
+
+    <div class="sheets-tabla">
+      <div class="sheets-header">
+        <div>A — TELEFONO</div>
+        <div>B — ESTADO</div>
+        <div>C — DATOS</div>
+        <div>D — ACTUALIZADO</div>
+      </div>
+      <div class="sheets-row">
+        <div>5492216693344</div>
+        <div>menu_mostrado</div>
+        <div>{}</div>
+        <div>2026-04-29 14:02</div>
+      </div>
+      <div class="sheets-row">
+        <div>5491158901234</div>
+        <div>esperando_productos</div>
+        <div>{"nombre": "María"}</div>
+        <div>2026-04-29 15:30</div>
+      </div>
+      <div class="sheets-row">
+        <div>5492214567890</div>
+        <div>esperando_pago</div>
+        <div>{"productos": "2 granolas", "total": 16500, "direccion": "Calle 50 123"}</div>
+        <div>2026-04-29 16:45</div>
+      </div>
+    </div>
+
+    <div class="paso"><div class="num num-sheets">3</div><p>Copiá la <strong>URL de la planilla</strong> desde el navegador. El ID de la planilla es la parte larga entre <code>/d/</code> y <code>/edit</code>. Ejemplo: <code>1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms</code>. Guardalo.</p></div>
+    <div class="paso"><div class="num num-sheets">4</div><p>En n8n, andá a <strong>Settings → Credentials → New Credential</strong> → buscá <strong>"Google Sheets OAuth2"</strong> → seguí el proceso de autorización con tu cuenta de Google. Esto le da permiso a n8n para leer y escribir en la planilla.</p></div>
+
+    <h3>Estados posibles del bot</h3>
+    <table>
+      <tr><th>Estado en Sheets</th><th>Qué significa</th><th>Qué espera el bot a continuación</th></tr>
+      <tr><td><code>nuevo</code></td><td>Primera vez que escribe</td><td>Cualquier mensaje → mostrar menú</td></tr>
+      <tr><td><code>menu_mostrado</code></td><td>Vio el menú principal</td><td>Un número del 1 al 5</td></tr>
+      <tr><td><code>catalogo</code></td><td>Está viendo el catálogo</td><td>Lo que quiere pedir</td></tr>
+      <tr><td><code>esperando_productos</code></td><td>Está armando el pedido</td><td>Lista de productos</td></tr>
+      <tr><td><code>esperando_confirmacion</code></td><td>Vio el resumen del pedido</td><td>"sí" o modificación</td></tr>
+      <tr><td><code>esperando_tipo_entrega</code></td><td>Confirmó el pedido</td><td>"1" (envío) o "2" (retiro)</td></tr>
+      <tr><td><code>esperando_direccion</code></td><td>Eligió envío a domicilio</td><td>Dirección completa</td></tr>
+      <tr><td><code>esperando_nombre</code></td><td>Confirmó dirección o retiro</td><td>Nombre y apellido</td></tr>
+      <tr><td><code>esperando_pago</code></td><td>Eligió método de pago</td><td>Comprobante (imagen)</td></tr>
+      <tr><td><code>pago_recibido</code></td><td>Mandó el comprobante</td><td>Empleado verifica y confirma</td></tr>
+      <tr><td><code>completado</code></td><td>Pedido confirmado</td><td>Nada — flujo terminado</td></tr>
+    </table>
+  </div>
+
+  <!-- FASE 4: WEBHOOK -->
+  <div class="seccion" id="webhook">
+    <h2>🔗 Fase 4 — Conectar el webhook</h2>
+    <div class="fase-badge fase-n8n">🩷 n8n + Meta — Tiempo estimado: 15 minutos</div>
+
+    <h3>En n8n: crear el workflow principal</h3>
+    <div class="paso"><div class="num num-n8n">1</div><p>En n8n, clic en <strong>"New Workflow"</strong> → nombralo <code>NutriDiet — Bot Principal</code>.</p></div>
+    <div class="paso"><div class="num num-n8n">2</div><p>Agregá el primer nodo: buscá <strong>"Webhook"</strong> → arrastralo al canvas.</p></div>
+    <div class="paso"><div class="num num-n8n">3</div><p>Configurá el nodo Webhook así:<br>
+    • <strong>HTTP Method:</strong> <code>POST</code><br>
+    • <strong>Path:</strong> <code>whatsapp</code><br>
+    • <strong>Response Mode:</strong> <code>Immediately</code> (importante: Meta necesita respuesta inmediata)<br>
+    • <strong>Response Code:</strong> <code>200</code><br><br>
+    La URL del webhook queda: <code>https://nutridiet-n8n.up.railway.app/webhook/whatsapp</code></p></div>
+
+    <h3>En Meta: registrar el webhook</h3>
+    <div class="paso"><div class="num num-meta">4</div><p>En Meta for Developers → tu app → <strong>WhatsApp → Configuración</strong> → buscá la sección <strong>"Webhooks"</strong> → clic en <strong>"Configurar webhooks"</strong>.</p></div>
+    <div class="paso"><div class="num num-meta">5</div><p>Completá:<br>
+    • <strong>URL de devolución de llamada:</strong> <code>https://nutridiet-n8n.up.railway.app/webhook/whatsapp</code><br>
+    • <strong>Token de verificación:</strong> Inventá una palabra secreta, ej: <code>nutridiet2026</code> (la vas a necesitar también en n8n)<br>
+    • Clic en <strong>"Verificar y guardar"</strong>.</p></div>
+    <div class="paso"><div class="num num-meta">6</div><p>En la sección de <strong>campos del webhook</strong>, activá el toggle de <strong><code>messages</code></strong>. Guardá.</p></div>
+
+    <div class="tip verde">
+      <span class="icono">✅</span>
+      <div>Si Meta pudo verificar el webhook significa que n8n está escuchando correctamente. Ya hay conexión entre los dos.</div>
+    </div>
+  </div>
+
+  <!-- FASE 5: FLUJO PRINCIPAL -->
+  <div class="seccion" id="flujo-principal">
+    <h2>🩷 Fase 5 — Construir el flujo principal en n8n</h2>
+    <div class="fase-badge fase-flujo">🩷 n8n Workflow — Tiempo estimado: 60-90 minutos</div>
+
+    <p class="seccion-intro">Este es el corazón del bot. Cada vez que llega un mensaje, este workflow decide qué responder. Los textos exactos de cada mensaje ya están en el archivo <strong>bot-flujos-textos-nutridiet.html</strong> — acá solo definimos la lógica de cuándo enviar cada uno.</p>
+
+    <h3>Nodo 1 — Webhook (ya creado en Fase 4)</h3>
+    <div class="nodo-n8n">
+      <div class="nodo-header"><span class="nodo-tipo tipo-webhook">Webhook</span><span class="nodo-titulo">Recibir mensaje de Meta</span></div>
+      <div class="nodo-cuerpo">Ya configurado. Recibe el JSON de Meta con toda la info del mensaje.</div>
+    </div>
+
+    <h3>Nodo 2 — Extraer datos del mensaje</h3>
+    <div class="nodo-n8n">
+      <div class="nodo-header"><span class="nodo-tipo tipo-set">Set</span><span class="nodo-titulo">Extraer: teléfono, mensaje, tipo</span></div>
+      <div class="nodo-cuerpo">
+        <p style="margin-bottom:8px">Creá un nodo <strong>Set</strong> y definí estas variables:</p>
+        <ul>
+          <li><code>telefono</code> = <code>{{ $json.entry[0].changes[0].value.messages[0].from }}</code></li>
+          <li><code>mensaje</code> = <code>{{ $json.entry[0].changes[0].value.messages[0].text.body }}</code></li>
+          <li><code>tipo_msg</code> = <code>{{ $json.entry[0].changes[0].value.messages[0].type }}</code></li>
+          <li><code>phone_number_id</code> = <code>{{ $json.entry[0].changes[0].value.metadata.phone_number_id }}</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Nodo 3 — Verificar si es un mensaje válido</h3>
+    <div class="nodo-n8n">
+      <div class="nodo-header"><span class="nodo-tipo tipo-if">IF</span><span class="nodo-titulo">¿Es un mensaje de texto?</span></div>
+      <div class="nodo-cuerpo">
+        <ul>
+          <li>Condición: <code>tipo_msg</code> igual a <code>text</code></li>
+          <li>Si es <strong>true</strong>: seguir al nodo 4</li>
+          <li>Si es <strong>false</strong>: puede ser imagen (comprobante de pago) → flujo de pago</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Nodo 4 — Buscar estado del usuario en Google Sheets</h3>
+    <div class="nodo-n8n">
+      <div class="nodo-header"><span class="nodo-tipo tipo-sheets">Google Sheets</span><span class="nodo-titulo">Buscar estado del usuario</span></div>
+      <div class="nodo-cuerpo">
+        <ul>
+          <li><strong>Operation:</strong> <code>Lookup</code></li>
+          <li><strong>Spreadsheet:</strong> <em>NutriDiet Bot — Estados</em> (el que creaste)</li>
+          <li><strong>Sheet:</strong> <code>Sheet1</code></li>
+          <li><strong>Lookup Column:</strong> <code>TELEFONO</code></li>
+          <li><strong>Lookup Value:</strong> <code>{{ $json.telefono }}</code></li>
+          <li>Si no encuentra resultado → el estado es <code>nuevo</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Nodo 5 — Switch por estado</h3>
+    <div class="nodo-n8n">
+      <div class="nodo-header"><span class="nodo-tipo tipo-switch">Switch</span><span class="nodo-titulo">¿En qué estado está el usuario?</span></div>
+      <div class="nodo-cuerpo">
+        <p style="margin-bottom:8px">Creá una salida para cada estado. El valor a evaluar es el campo <code>ESTADO</code> de Sheets:</p>
+        <ul>
+          <li><strong>Salida 1:</strong> <code>ESTADO</code> = <code>nuevo</code> o vacío → Flujo Bienvenida</li>
+          <li><strong>Salida 2:</strong> <code>ESTADO</code> = <code>menu_mostrado</code> → Procesar opción del menú</li>
+          <li><strong>Salida 3:</strong> <code>ESTADO</code> = <code>esperando_productos</code> → Flujo Pedido</li>
+          <li><strong>Salida 4:</strong> <code>ESTADO</code> = <code>esperando_confirmacion</code> → Flujo Confirmación</li>
+          <li><strong>Salida 5:</strong> <code>ESTADO</code> = <code>esperando_tipo_entrega</code> → Flujo Entrega</li>
+          <li><strong>Salida 6:</strong> <code>ESTADO</code> = <code>esperando_direccion</code> → Capturar dirección</li>
+          <li><strong>Salida 7:</strong> <code>ESTADO</code> = <code>esperando_nombre</code> → Capturar nombre</li>
+          <li><strong>Salida 8:</strong> <code>ESTADO</code> = <code>esperando_pago</code> → Capturar forma de pago</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Nodo 6 — Enviar mensaje (se repite para cada respuesta)</h3>
+    <div class="nodo-n8n">
+      <div class="nodo-header"><span class="nodo-tipo tipo-http">HTTP Request</span><span class="nodo-titulo">Enviar mensaje por Meta API</span></div>
+      <div class="nodo-cuerpo">
+        <p style="margin-bottom:10px">Este nodo lo vas a reusar para cada mensaje que el bot envía. Configuración base:</p>
+        <ul>
+          <li><strong>Method:</strong> <code>POST</code></li>
+          <li><strong>URL:</strong> <code>https://graph.facebook.com/v19.0/{{ $json.phone_number_id }}/messages</code></li>
+          <li><strong>Authentication:</strong> <code>Header Auth</code> → <code>Authorization: Bearer TU_TOKEN_META</code></li>
+          <li><strong>Body Type:</strong> <code>JSON</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>JSON del cuerpo para enviar un mensaje de texto</h3>
+    <div class="codigo"><div class="label">COPIAR EN HTTP REQUEST — Body JSON</div>{
+  <span class="clave">"messaging_product"</span>: <span class="string">"whatsapp"</span>,
+  <span class="clave">"recipient_type"</span>: <span class="string">"individual"</span>,
+  <span class="clave">"to"</span>: <span class="string">"{{ $('Set').item.json.telefono }}"</span>,
+  <span class="clave">"type"</span>: <span class="string">"text"</span>,
+  <span class="clave">"text"</span>: {
+    <span class="clave">"preview_url"</span>: <span class="valor">false</span>,
+    <span class="clave">"body"</span>: <span class="string">"¡Hola! 👋 Bienvenido/a a *NutriDiet Market* 🌿\n\n🛒 *1* — Ver catálogo\n📦 *2* — Hacer un pedido\n🚚 *3* — Consultar envíos\n📍 *4* — Horarios\n💬 *5* — Hablar con una persona"</span>
+  }
+}</div>
+
+    <div class="tip morado">
+      <span class="icono">💡</span>
+      <div>Reemplazá el <code>body</code> con el texto de cada mensaje del archivo <strong>bot-flujos-textos-nutridiet.html</strong>. Los saltos de línea van como <code>\n</code> en el JSON. El negrita de WhatsApp se hace con <code>*texto*</code>.</div>
+    </div>
+
+    <h3>Nodo 7 — Actualizar estado en Sheets</h3>
+    <div class="nodo-n8n">
+      <div class="nodo-header"><span class="nodo-tipo tipo-sheets">Google Sheets</span><span class="nodo-titulo">Actualizar estado del usuario</span></div>
+      <div class="nodo-cuerpo">
+        <p style="margin-bottom:8px">Después de cada respuesta, actualizás el estado:</p>
+        <ul>
+          <li><strong>Operation:</strong> <code>Update</code> (si existe) o <code>Append</code> (si es nuevo)</li>
+          <li><strong>TELEFONO:</strong> <code>{{ $json.telefono }}</code></li>
+          <li><strong>ESTADO:</strong> el nuevo estado (ej: <code>menu_mostrado</code>)</li>
+          <li><strong>DATOS:</strong> JSON con los datos que vas acumulando del pedido</li>
+          <li><strong>ACTUALIZADO:</strong> <code>{{ $now }}</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 6: FLUJO PEDIDO -->
+  <div class="seccion" id="flujo-pedido">
+    <h2>📦 Fase 6 — Flujo de pedido completo en n8n</h2>
+    <div class="fase-badge fase-flujo">🩷 El flujo más importante — seguir este orden</div>
+
+    <p class="seccion-intro">Este es el flujo más largo. Cada paso captura un dato del cliente y actualiza el estado en Sheets. Los textos de cada mensaje están en el archivo <strong>bot-flujos-textos-nutridiet.html</strong>, mensajes 3A al 3G.</p>
+
+    <table>
+      <tr><th>Estado actual</th><th>Mensaje recibido</th><th>Acción de n8n</th><th>Nuevo estado</th></tr>
+      <tr><td><code>menu_mostrado</code></td><td><code>"2"</code></td><td>Enviar mensaje 3A (inicio pedido)</td><td><code>esperando_productos</code></td></tr>
+      <tr><td><code>esperando_productos</code></td><td>Lista de productos</td><td>Guardar en DATOS, enviar mensaje 3B (resumen + total)</td><td><code>esperando_confirmacion</code></td></tr>
+      <tr><td><code>esperando_confirmacion</code></td><td><code>"si"</code> / <code>"sí"</code></td><td>Enviar mensaje 3C (envío o retiro)</td><td><code>esperando_tipo_entrega</code></td></tr>
+      <tr><td><code>esperando_tipo_entrega</code></td><td><code>"1"</code> (envío)</td><td>Enviar mensaje 3D (pedir dirección)</td><td><code>esperando_direccion</code></td></tr>
+      <tr><td><code>esperando_tipo_entrega</code></td><td><code>"2"</code> (retiro)</td><td>Enviar mensaje 3E (confirmar retiro)</td><td><code>esperando_nombre</code></td></tr>
+      <tr><td><code>esperando_direccion</code></td><td>Dirección del cliente</td><td>Guardar dirección en DATOS, enviar mensaje 3F (pedir nombre)</td><td><code>esperando_nombre</code></td></tr>
+      <tr><td><code>esperando_nombre</code></td><td>Nombre y apellido</td><td>Guardar nombre en DATOS, enviar mensaje 3G (opciones de pago)</td><td><code>esperando_eleccion_pago</code></td></tr>
+      <tr><td><code>esperando_eleccion_pago</code></td><td><code>"1"</code> transferencia</td><td>Enviar mensaje 4A con CBU + datos</td><td><code>esperando_pago</code></td></tr>
+      <tr><td><code>esperando_eleccion_pago</code></td><td><code>"2"</code> MP</td><td>Enviar mensaje 4B con link MP</td><td><code>esperando_pago</code></td></tr>
+      <tr><td><code>esperando_pago</code></td><td>Imagen (comprobante)</td><td>Enviar mensaje 4E + notificar al empleado</td><td><code>pago_recibido</code></td></tr>
+    </table>
+
+    <h3>Cómo acumular datos del pedido en Sheets</h3>
+    <p style="font-size:13px;color:var(--gris);margin-bottom:10px">El campo DATOS es un JSON que va creciendo a medida que el cliente avanza. En cada paso, n8n lee el JSON anterior, le agrega el nuevo dato y lo guarda.</p>
+    <div class="codigo"><div class="label label-sheets">FUNCIÓN EN N8N — Acumular datos del pedido</div><span class="comentario">// Nodo Function para combinar datos anteriores con el nuevo dato</span>
+const datosActuales = JSON.parse($input.item.json.DATOS || '{}');
+
+<span class="comentario">// Agregar el nuevo dato según el estado</span>
+datosActuales.productos = $input.item.json.mensaje;
+
+<span class="comentario">// Devolver el JSON actualizado como string para Sheets</span>
+return { datos_actualizados: JSON.stringify(datosActuales) };</div>
+
+    <h3>Notificar al empleado cuando llega un comprobante</h3>
+    <div class="nodo-n8n">
+      <div class="nodo-header"><span class="nodo-tipo tipo-http">HTTP Request</span><span class="nodo-titulo">Notificar al empleado por WhatsApp</span></div>
+      <div class="nodo-cuerpo">
+        <p>Cuando el cliente manda el comprobante (tipo <code>image</code>), n8n envía un mensaje al número del empleado con el resumen del pedido. Usá el mismo nodo HTTP Request pero con el número del empleado como destino.</p>
+      </div>
+    </div>
+    <div class="codigo"><div class="label">MENSAJE DE NOTIFICACIÓN AL EMPLEADO</div>⚠️ *NUEVO PEDIDO CON PAGO* ⚠️
+
+📞 Cliente: {{ $json.telefono }}
+👤 Nombre: {{ datos.nombre }}
+🛒 Productos: {{ datos.productos }}
+📍 Dirección: {{ datos.direccion }}
+💳 Pago: {{ datos.metodo_pago }}
+
+El cliente acaba de enviar el comprobante. Verificar y confirmar.</div>
+  </div>
+
+  <!-- FASE 7: FLUJOS INFO -->
+  <div class="seccion" id="flujo-info">
+    <h2>📍 Fase 7 — Flujos simples de info</h2>
+    <div class="fase-badge fase-flujo">🩷 Envíos, horarios, catálogo — los más fáciles de armar</div>
+
+    <p class="seccion-intro">Estos flujos no tienen estado — simplemente envían un texto y vuelven al menú. Son los más rápidos de configurar.</p>
+
+    <table>
+      <tr><th>Opción del menú</th><th>Estado que pone</th><th>Mensaje que envía</th><th>Estado después</th></tr>
+      <tr><td>Usuario elige <code>"1"</code></td><td><code>catalogo</code></td><td>Mensaje 2A (catálogo + link)</td><td><code>catalogo</code></td></tr>
+      <tr><td>Usuario elige <code>"3"</code></td><td>—</td><td>Mensaje 5A (info envíos)</td><td><code>menu_mostrado</code></td></tr>
+      <tr><td>Usuario elige <code>"4"</code></td><td>—</td><td>Mensaje 6A (horarios + mapa)</td><td><code>menu_mostrado</code></td></tr>
+      <tr><td>Usuario elige <code>"5"</code></td><td><code>agente</code></td><td>Mensaje de transferencia a empleado</td><td><code>agente</code></td></tr>
+      <tr><td>Mensaje no reconocido (x1)</td><td>—</td><td>Mensaje 1C (no entendí, mostrar menú)</td><td>Estado anterior</td></tr>
+      <tr><td>Mensaje no reconocido (x2)</td><td><code>agente</code></td><td>Mensaje 1D + notificar empleado</td><td><code>agente</code></td></tr>
+    </table>
+  </div>
+
+  <!-- FASE 8: TEST -->
+  <div class="seccion" id="test">
+    <h2>🧪 Fase 8 — Probar que funciona</h2>
+    <div class="fase-badge fase-test">🧪 Testing — Tiempo estimado: 30 minutos</div>
+
+    <h3>Checklist de pruebas</h3>
+    <div class="paso"><div class="num num-verde">1</div><p>Escribí <strong>"Hola"</strong> desde tu WhatsApp personal al número del bot. Deberías recibir el menú de bienvenida en menos de 2 segundos.</p></div>
+    <div class="paso"><div class="num num-verde">2</div><p>Respondé <strong>"1"</strong> → deberías recibir el mensaje del catálogo.</p></div>
+    <div class="paso"><div class="num num-verde">3</div><p>Iniciá desde cero: escribí <strong>"2"</strong> → completá el flujo de pedido hasta el final (productos → dirección → nombre → pago). Verificá en Google Sheets que se van actualizando los estados.</p></div>
+    <div class="paso"><div class="num num-verde">4</div><p>Mandá una imagen cualquiera cuando el estado sea <code>esperando_pago</code> → verificá que el empleado recibe la notificación.</p></div>
+    <div class="paso"><div class="num num-verde">5</div><p>Escribí algo sin sentido dos veces seguidas → verificá que al segundo intento el bot dice que te pasa con una persona.</p></div>
+    <div class="paso"><div class="num num-verde">6</div><p>Probá desde un segundo número distinto al mismo tiempo para verificar que los estados de ambos se guardan por separado en Sheets.</p></div>
+
+    <div class="tip verde">
+      <span class="icono">🎉</span>
+      <div>Si todas las pruebas pasan, el bot está listo para recibir clientes reales. El siguiente paso es conectar el número real del negocio siguiendo el proceso de Meta para migrar un número a la API.</div>
+    </div>
+
+    <h3>Problemas comunes y cómo resolverlos</h3>
+    <table>
+      <tr><th>Problema</th><th>Causa probable</th><th>Solución</th></tr>
+      <tr><td>Meta no puede verificar el webhook</td><td>n8n no está publicado en internet o la URL es incorrecta</td><td>Verificar la URL de Railway y que el nodo Webhook esté activo en n8n</td></tr>
+      <tr><td>El bot no responde</td><td>El workflow está inactivo</td><td>En n8n, asegurate de que el workflow tenga el toggle "Active" en ON</td></tr>
+      <tr><td>Error de token</td><td>El token de Meta venció (dura 24hs)</td><td>Regenerar el token en Meta o configurar un System User Token permanente</td></tr>
+      <tr><td>Google Sheets no se actualiza</td><td>Credenciales de Google expiradas</td><td>En n8n → Settings → Credentials → reconectar la cuenta de Google</td></tr>
+      <tr><td>El bot responde pero con texto roto</td><td>Caracteres especiales en el JSON</td><td>Revisar que los saltos de línea sean <code>\n</code> y no Enter real en el JSON</td></tr>
+    </table>
+  </div>
+
+  <!-- RESUMEN COSTOS -->
+  <div class="seccion">
+    <h2>💰 Resumen de costos reales</h2>
+    <table>
+      <tr><th>Servicio</th><th>Qué cubre</th><th>Costo/mes</th></tr>
+      <tr><td><strong>Meta WhatsApp Cloud API</strong></td><td>Hasta 1.000 conversaciones de servicio (cliente te escribe primero)</td><td style="color:var(--verde);font-weight:700">Gratis</td></tr>
+      <tr><td><strong>n8n en Railway.app</strong></td><td>El bot corriendo 24/7</td><td><strong>~$0-5 USD</strong></td></tr>
+      <tr><td><strong>Google Sheets</strong></td><td>Memoria del bot</td><td style="color:var(--verde);font-weight:700">Gratis</td></tr>
+      <tr><td colspan="2"><strong>TOTAL para empezar</strong></td><td style="color:var(--verde);font-weight:800;font-size:15px">~$0 a $5 USD/mes</td></tr>
+      <tr><td colspan="2">Si el volumen sube de 1.000 conversaciones/mes</td><td>~$0.02 USD por conversación extra</td></tr>
+      <tr><td colspan="2">Comparación: Wati.io</td><td>$49 USD/mes</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    <p>Guía n8n + Meta WhatsApp Cloud API · NutriDiet Market · Abril 2026</p>
+    <p style="margin-top:4px">Flujos y textos del bot: ver archivo <strong>bot-flujos-textos-nutridiet.html</strong></p>
+  </div>
+
+</div>
+</body>
+</html>
