@@ -1,0 +1,71 @@
+{
+  "name": "NutriDiet — Webhook Verify",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "whatsapp",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000001",
+      "name": "Webhook GET Verify",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "nutridiet-verify-get"
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "const data = $input.first().json;\nconst query = data.query || data;\nconst challenge = query['hub.challenge'] || (data.hub && data.hub.challenge) || '';\nreturn [{ json: { challenge: challenge } }];"
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000003",
+      "name": "Extraer Challenge",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.challenge }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000002",
+      "name": "Responder Challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [750, 300]
+    }
+  ],
+  "connections": {
+    "Webhook GET Verify": {
+      "main": [
+        [
+          {
+            "node": "Extraer Challenge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Challenge": {
+      "main": [
+        [
+          {
+            "node": "Responder Challenge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

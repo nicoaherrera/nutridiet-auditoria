@@ -1,0 +1,219 @@
+{
+  "name": "NutriDiet — Bot Principal",
+  "nodes": [
+    {
+      "id": "aaaa1111-0001-0001-0001-aaaaaaaaaaaa",
+      "name": "Webhook WhatsApp",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp",
+        "responseMode": "onReceived",
+        "responseData": "noData",
+        "options": {}
+      }
+    },
+    {
+      "id": "aaaa1111-0002-0002-0002-aaaaaaaaaaaa",
+      "name": "Tiene Mensajes",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "cond-msg",
+              "leftValue": "={{ $json.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from ? 'si' : 'no' }}",
+              "rightValue": "si",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "aaaa1111-0003-0003-0003-aaaaaaaaaaaa",
+      "name": "Set Campos",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [680, 200],
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            { "id": "f1", "name": "telefono",        "type": "string", "value": "={{ $json.body.entry[0].changes[0].value.messages[0].from }}" },
+            { "id": "f2", "name": "mensaje",         "type": "string", "value": "={{ $json.body.entry[0].changes[0].value.messages[0].text?.body || '' }}" },
+            { "id": "f3", "name": "tipo_msg",        "type": "string", "value": "={{ $json.body.entry[0].changes[0].value.messages[0].type }}" },
+            { "id": "f4", "name": "phone_number_id", "type": "string", "value": "={{ $json.body.entry[0].changes[0].value.metadata.phone_number_id }}" }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "aaaa1111-0004-0004-0004-aaaaaaaaaaaa",
+      "name": "Sheets Buscar Usuario",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [900, 200],
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "value": "1WkFbw22p4QRg24R7T7sYuKlxPObbeJ0Qi1GCxZ0qZGQ", "mode": "id" },
+        "sheetName":  { "__rl": true, "value": "Sheet1", "mode": "name" },
+        "filtersUI": {
+          "values": [{ "lookupColumn": "TELEFONO", "lookupValue": "={{ $('Set Campos').item.json.telefono }}" }]
+        },
+        "options": { "returnFirstMatch": true }
+      },
+      "credentials": { "googleSheetsOAuth2Api": { "name": "Google Sheets account" } }
+    },
+    {
+      "id": "aaaa1111-0005-0005-0005-aaaaaaaaaaaa",
+      "name": "Logica del Bot",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 200],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ============================================================\n// NUTRIDIET MARKET — LOGICA DEL BOT\n// Reemplazar los valores marcados con TODO antes de activar\n// ============================================================\n\nconst CBU           = 'TODO_CBU_AQUI';          // ej: 0720461088000054321874\nconst ALIAS_CBU     = 'TODO_ALIAS_AQUI';        // ej: NUTRIDIET.MKT\nconst ALIAS_MP      = 'TODO_ALIAS_MP_AQUI';     // ej: nutridiet.market\nconst ALIAS_NAVE    = 'TODO_ALIAS_NAVE_AQUI';   // ej: nutridiet.nave\nconst TEL_EMPLEADO  = 'TODO_TEL_EMPLEADO';      // ej: 5492216993344 (con codigo pais, sin +)\n\n// ------------------------------------------------------------\n// Datos del mensaje entrante\n// ------------------------------------------------------------\nconst campos  = $('Set Campos').first().json;\nconst telefono       = campos.telefono;\nconst tipo_msg       = campos.tipo_msg;\nconst phone_number_id = campos.phone_number_id;\nconst mensaje = (campos.mensaje || '').toLowerCase().trim();\n\n// ------------------------------------------------------------\n// Estado actual del usuario (desde Google Sheets)\n// ------------------------------------------------------------\nlet estado = 'nuevo';\nlet datos  = {};\n\nconst filas = $input.all();\nif (filas.length > 0 && filas[0].json.ESTADO) {\n  estado = filas[0].json.ESTADO;\n  try { datos = JSON.parse(filas[0].json.DATOS || '{}'); } catch(e) { datos = {}; }\n}\n\n// ------------------------------------------------------------\n// Variables de salida\n// ------------------------------------------------------------\nlet response_text        = '';\nlet nuevo_estado         = estado;\nlet nuevos_datos         = { ...datos };\nlet notificar_empleado   = false;\nlet msg_empleado         = '';\n\n// ============================================================\n// LOGICA PRINCIPAL\n// ============================================================\n\nif (tipo_msg === 'image' && estado === 'esperando_pago') {\n  // Imagen = comprobante de pago\n  response_text = '¡Recibimos tu comprobante! 🎉\\n\\nEstamos verificando el pago. En los próximos minutos te confirmamos y preparamos tu pedido 💪\\n\\n_¡Gracias por elegirnos, ' + (datos.nombre || '') + '!_ 🌿';\n  nuevo_estado  = 'pago_recibido';\n  notificar_empleado = true;\n  msg_empleado = '⚠️ *NUEVO PEDIDO CON COMPROBANTE* ⚠️\\n\\n📞 Teléfono: ' + telefono + '\\n👤 Nombre: ' + (datos.nombre || 'sin nombre') + '\\n🛒 Productos: ' + (datos.productos || 'ver chat') + '\\n📍 Entrega: ' + (datos.tipo_entrega === 'retiro' ? 'Retiro en tienda' : datos.direccion || 'sin dirección') + '\\n💳 Pago: ' + (datos.metodo_pago || 'transferencia') + '\\n\\nVerificar pago y confirmar.';\n\n} else if (tipo_msg === 'text') {\n\n  // ----------------------------------------------------------\n  // Estado: NUEVO o COMPLETADO → mostrar bienvenida\n  // ----------------------------------------------------------\n  if (estado === 'nuevo' || estado === 'completado') {\n    response_text = '¡Hola! 👋 Bienvenido/a a *NutriDiet Market* 🌿\\n\\nSomos tu supermercado natural en La Plata: alimentos saludables, suplementos, cosmética natural y bazar decorativo. Enviamos a todo el país 🚚\\n\\n¿En qué te puedo ayudar hoy?\\n\\n🛒 *1* — Ver catálogo de productos\\n📦 *2* — Hacer un pedido\\n🚚 *3* — Consultar envíos y costos\\n📍 *4* — Horarios y dirección del local\\n💬 *5* — Hablar con una persona del equipo\\n\\n_Respondé con el número de tu elección_ 😊';\n    nuevo_estado  = 'menu_mostrado';\n    nuevos_datos  = {};\n\n  // ----------------------------------------------------------\n  // Estado: MENU MOSTRADO → procesar opción elegida\n  // ----------------------------------------------------------\n  } else if (estado === 'menu_mostrado') {\n    if (mensaje === '1') {\n      response_text = '¡Perfecto! Acá podés ver todo nuestro catálogo 👇\\n\\nTenemos más de 500 productos en estas categorías:\\n🥦 *Alimentos naturales* — granolas, frutos secos, semillas, snacks, harinas, legumbres, aceites\\n💊 *Suplementos* — proteínas, colágeno, vitaminas, minerales, antioxidantes\\n🧴 *Cosmética natural* — cuidado de piel, cabello y cuerpo\\n🏡 *NutHome* — bazar y decoración sustentable\\n\\n¿Estás buscando algo en particular o querés que te recomiende? Contame 😊';\n      nuevo_estado = 'catalogo';\n    } else if (mensaje === '2') {\n      response_text = '¡Genial, armemos tu pedido! 🛒\\n\\nDecime qué productos querés y la cantidad de cada uno.\\n\\nPor ejemplo:\\n_\"2 granolas sin azúcar, 1 colágeno 300g y 1 proteína vainilla\"_\\n\\n¡Escribime lo que querés! 😊';\n      nuevo_estado = 'esperando_productos';\n    } else if (mensaje === '3') {\n      response_text = '¡Claro! Acá te cuento todo sobre los envíos 📦\\n\\n*Enviamos a todo el país* a través de ShipNow 🚚\\n\\n📋 *Tiempos de entrega:*\\n• CABA y GBA: 24-48 horas hábiles\\n• Interior del país: 3-5 días hábiles\\n• La Plata y alrededores: 24-48 horas hábiles\\n\\n📦 *Retiro sin cargo:*\\nPodés retirar gratis en nuestro local:\\n📍 Av. 7 e/34 y 35 nº 136, La Plata\\n\\n¿Querés que te calcule el costo a tu zona? Mandame tu código postal 😊';\n      nuevo_estado = 'menu_mostrado';\n    } else if (mensaje === '4') {\n      response_text = '¡Con gusto! Acá tenés todo sobre nuestro local 📍\\n\\n🏪 *NutriDiet Market*\\nAv. 7 e/34 y 35 nº 136, La Plata, Buenos Aires\\n\\n🕘 *Horarios de atención:*\\n• Lunes a Viernes: 9:00 a 20:00 hs\\n• Sábados: 10:00 a 19:00 hs\\n• Domingos: cerrado\\n\\n🗺️ Google Maps: https://maps.google.com/?q=Av+7+136+La+Plata\\n\\n¿Puedo ayudarte con algo más? 😊';\n      nuevo_estado = 'menu_mostrado';\n    } else if (mensaje === '5') {\n      response_text = 'Disculpá, voy a pasarte con una persona de nuestro equipo 💚\\n\\nEn un momento te atienden 🙏';\n      nuevo_estado = 'agente';\n      notificar_empleado = true;\n      msg_empleado = '💬 *CLIENTE SOLICITA ATENCIÓN HUMANA*\\n\\nTeléfono: ' + telefono + '\\nEstado anterior: ' + estado;\n    } else {\n      response_text = 'Hmm, no entendí bien tu mensaje 😅\\n\\n¿Querés que te muestre el menú de opciones?\\n\\n🛒 *1* — Ver catálogo\\n📦 *2* — Hacer un pedido\\n🚚 *3* — Envíos\\n📍 *4* — Horarios y local\\n💬 *5* — Hablar con una persona';\n      nuevo_estado = 'menu_mostrado';\n    }\n\n  // ----------------------------------------------------------\n  // Estado: CATÁLOGO → guiar al pedido\n  // ----------------------------------------------------------\n  } else if (estado === 'catalogo') {\n    response_text = '¡Gracias por contarme! 🔍\\n\\n¿Querés que arme el pedido directamente? Decime el producto y la cantidad y en un segundo te tengo el total 🛒';\n    nuevo_estado = 'esperando_productos';\n\n  // ----------------------------------------------------------\n  // Estado: ESPERANDO PRODUCTOS\n  // ----------------------------------------------------------\n  } else if (estado === 'esperando_productos') {\n    nuevos_datos.productos = campos.mensaje;\n    response_text = 'Anotado! 📝 Recibí tu pedido:\\n\\n🛒 *Productos:*\\n_\"' + campos.mensaje + '\"_\\n\\n¿Es correcto? Respondé *SI* para confirmar o contame qué cambiar ✅';\n    nuevo_estado = 'esperando_confirmacion';\n\n  // ----------------------------------------------------------\n  // Estado: ESPERANDO CONFIRMACIÓN\n  // ----------------------------------------------------------\n  } else if (estado === 'esperando_confirmacion') {\n    if (mensaje.includes('si') || mensaje.includes('sí') || mensaje === 'ok' || mensaje === 'confirmo') {\n      response_text = 'Perfecto! ¿Cómo preferís recibir tu pedido?\\n\\n🏠 *1* — Envío a domicilio\\n🏪 *2* — Retiro en el local sin cargo\\n_(Av. 7 e/34 y 35 nº 136, La Plata)_';\n      nuevo_estado = 'esperando_tipo_entrega';\n    } else {\n      response_text = '¡No hay problema! Contame qué querés cambiar y lo ajustamos 😊';\n      nuevo_estado = 'esperando_productos';\n    }\n\n  // ----------------------------------------------------------\n  // Estado: ESPERANDO TIPO DE ENTREGA\n  // ----------------------------------------------------------\n  } else if (estado === 'esperando_tipo_entrega') {\n    if (mensaje === '1') {\n      response_text = '¡Perfecto! Para calcular el envío necesito:\\n\\n📍 Calle y número\\n🏙️ Ciudad y provincia\\n📮 Código postal\\n\\nPodés mandarlo todo junto en un mensaje 😊';\n      nuevos_datos.tipo_entrega = 'envio';\n      nuevo_estado = 'esperando_direccion';\n    } else if (mensaje === '2') {\n      response_text = '¡Genial! Podés retirar tu pedido en:\\n\\n📍 *Av. 7 e/34 y 35 nº 136, La Plata*\\n🕘 Lun a Vie: 9:00-20:00 / Sáb: 10:00-19:00\\n\\nTe avisamos cuando esté listo 💚\\n\\nAhora necesito tu *nombre y apellido completo* 👇';\n      nuevos_datos.tipo_entrega = 'retiro';\n      nuevos_datos.direccion = 'Retiro en tienda';\n      nuevo_estado = 'esperando_nombre';\n    } else {\n      response_text = 'Por favor respondé *1* para envío a domicilio o *2* para retiro en el local 😊';\n    }\n\n  // ----------------------------------------------------------\n  // Estado: ESPERANDO DIRECCIÓN\n  // ----------------------------------------------------------\n  } else if (estado === 'esperando_direccion') {\n    nuevos_datos.direccion = campos.mensaje;\n    response_text = 'Perfecto! Anotamos la dirección 📍\\n\\nAhora necesito tu *nombre y apellido completo* para registrar el pedido 👇';\n    nuevo_estado = 'esperando_nombre';\n\n  // ----------------------------------------------------------\n  // Estado: ESPERANDO NOMBRE\n  // ----------------------------------------------------------\n  } else if (estado === 'esperando_nombre') {\n    nuevos_datos.nombre = campos.mensaje;\n    const nombre_corto = campos.mensaje.split(' ')[0];\n    response_text = '¡Gracias, ' + nombre_corto + '! 😊 Ya casi terminamos.\\n\\n¿Cómo querés pagar?\\n\\n💳 *1* — Transferencia bancaria / CBU\\n📱 *2* — Mercado Pago\\n🔵 *3* — Nave\\n💵 *4* — Efectivo (solo retiro en tienda)';\n    nuevo_estado = 'esperando_eleccion_pago';\n\n  // ----------------------------------------------------------\n  // Estado: ESPERANDO ELECCIÓN DE PAGO\n  // ----------------------------------------------------------\n  } else if (estado === 'esperando_eleccion_pago') {\n    if (mensaje === '1') {\n      nuevos_datos.metodo_pago = 'transferencia';\n      response_text = '¡Perfecto! Hacé la transferencia a:\\n\\n🏦 *CBU:* ' + CBU + '\\n📛 *Titular:* NutriDiet Market\\n🔖 *Alias:* ' + ALIAS_CBU + '\\n\\nUna vez que tengas el comprobante envialo acá como foto 📸 y confirmamos tu pedido al toque 💚';\n      nuevo_estado = 'esperando_pago';\n    } else if (mensaje === '2') {\n      nuevos_datos.metodo_pago = 'mercadopago';\n      response_text = '¡Perfecto! Podés pagar por Mercado Pago:\\n\\n📱 *Alias MP:* ' + ALIAS_MP + '\\n\\nUna vez que pagues envianos el comprobante acá 📸 💚';\n      nuevo_estado = 'esperando_pago';\n    } else if (mensaje === '3') {\n      nuevos_datos.metodo_pago = 'nave';\n      response_text = '¡Perfecto! Podés pagar por Nave:\\n\\n📱 *Alias:* ' + ALIAS_NAVE + '\\n\\nUna vez que pagues envianos el comprobante acá 📸 💚';\n      nuevo_estado = 'esperando_pago';\n    } else if (mensaje === '4') {\n      nuevos_datos.metodo_pago = 'efectivo';\n      response_text = '¡Perfecto! Abonás en efectivo cuando venís a retirar al local 💵\\n\\n📍 *Av. 7 e/34 y 35 nº 136, La Plata*\\n🕘 Lun-Vie: 9:00-20:00 / Sáb: 10:00-19:00\\n\\nTe avisamos cuando el pedido esté listo 📲\\n\\n¡Gracias por elegirnos! 🌿';\n      nuevo_estado = 'pago_recibido';\n      notificar_empleado = true;\n      msg_empleado = '⚠️ *NUEVO PEDIDO — PAGO EFECTIVO* ⚠️\\n\\n📞 Teléfono: ' + telefono + '\\n👤 Nombre: ' + (nuevos_datos.nombre || '') + '\\n🛒 Productos: ' + (datos.productos || '') + '\\n📍 Entrega: Retiro en tienda\\n💳 Pago: Efectivo';\n    } else {\n      response_text = 'Por favor elegí una opción:\\n\\n💳 *1* — Transferencia\\n📱 *2* — Mercado Pago\\n🔵 *3* — Nave\\n💵 *4* — Efectivo (retiro en tienda)';\n    }\n\n  // ----------------------------------------------------------\n  // Estado: ESPERANDO PAGO\n  // ----------------------------------------------------------\n  } else if (estado === 'esperando_pago') {\n    response_text = 'Todavía estamos esperando el comprobante de pago 📸\\n\\nCuando lo tengas envialo acá como foto y confirmamos tu pedido 💚';\n\n  // ----------------------------------------------------------\n  // Estado: AGENTE / PAGO RECIBIDO\n  // ----------------------------------------------------------\n  } else if (estado === 'agente' || estado === 'pago_recibido') {\n    response_text = 'En breve un miembro de nuestro equipo te responde 💚\\n\\n¡Gracias por tu paciencia! 🌿';\n\n  // ----------------------------------------------------------\n  // Catch-all → mostrar menú\n  // ----------------------------------------------------------\n  } else {\n    response_text = '¡Hola! 👋 ¿En qué te puedo ayudar?\\n\\n🛒 *1* — Ver catálogo\\n📦 *2* — Hacer un pedido\\n🚚 *3* — Envíos\\n📍 *4* — Horarios y local\\n💬 *5* — Hablar con una persona';\n    nuevo_estado = 'menu_mostrado';\n  }\n\n} else {\n  response_text = '¡Hola! Por el momento proceso mensajes de texto e imágenes 📱\\nEscribime cualquier cosa y te ayudo 😊';\n}\n\nreturn [{\n  json: {\n    telefono,\n    phone_number_id,\n    response_text,\n    nuevo_estado,\n    nuevos_datos:       JSON.stringify(nuevos_datos),\n    notificar_empleado,\n    msg_empleado,\n    tel_empleado:       TEL_EMPLEADO\n  }\n}];"
+      }
+    },
+    {
+      "id": "aaaa1111-0006-0006-0006-aaaaaaaaaaaa",
+      "name": "Enviar Respuesta WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $json.phone_number_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer TODO_TOKEN_META_AQUI" },
+            { "name": "Content-Type",  "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"recipient_type\": \"individual\",\n  \"to\": \"{{ $json.telefono }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"preview_url\": false,\n    \"body\": \"{{ $json.response_text }}\"\n  }\n}",
+        "options": {}
+      }
+    },
+    {
+      "id": "aaaa1111-0007-0007-0007-aaaaaaaaaaaa",
+      "name": "Sheets Actualizar Estado",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1560, 200],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": { "__rl": true, "value": "1WkFbw22p4QRg24R7T7sYuKlxPObbeJ0Qi1GCxZ0qZGQ", "mode": "id" },
+        "sheetName":  { "__rl": true, "value": "Sheet1", "mode": "name" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "TELEFONO":    "={{ $('Logica del Bot').item.json.telefono }}",
+            "ESTADO":      "={{ $('Logica del Bot').item.json.nuevo_estado }}",
+            "DATOS":       "={{ $('Logica del Bot').item.json.nuevos_datos }}",
+            "ACTUALIZADO": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": ["TELEFONO"],
+          "schema": [
+            { "id": "TELEFONO",    "displayName": "TELEFONO",    "required": false, "defaultMatch": true,  "canBeUsedToMatch": true  },
+            { "id": "ESTADO",      "displayName": "ESTADO",      "required": false, "defaultMatch": false, "canBeUsedToMatch": false },
+            { "id": "DATOS",       "displayName": "DATOS",       "required": false, "defaultMatch": false, "canBeUsedToMatch": false },
+            { "id": "ACTUALIZADO", "displayName": "ACTUALIZADO", "required": false, "defaultMatch": false, "canBeUsedToMatch": false }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": { "googleSheetsOAuth2Api": { "name": "Google Sheets account" } }
+    },
+    {
+      "id": "aaaa1111-0008-0008-0008-aaaaaaaaaaaa",
+      "name": "Notificar Empleado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1780, 200],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "cond-notif",
+              "leftValue": "={{ $('Logica del Bot').item.json.notificar_empleado }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "aaaa1111-0009-0009-0009-aaaaaaaaaaaa",
+      "name": "Avisar al Empleado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 100],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $('Logica del Bot').item.json.phone_number_id }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer TODO_TOKEN_META_AQUI" },
+            { "name": "Content-Type",  "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "raw",
+        "rawContentType": "application/json",
+        "rawBody": "={{ JSON.stringify({ messaging_product: \"whatsapp\", recipient_type: \"individual\", to: $('Logica del Bot').item.json.tel_empleado, type: \"text\", text: { preview_url: false, body: $('Logica del Bot').item.json.msg_empleado } }) }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Webhook WhatsApp": {
+      "main": [[ { "node": "Tiene Mensajes", "type": "main", "index": 0 } ]]
+    },
+    "Tiene Mensajes": {
+      "main": [
+        [ { "node": "Set Campos", "type": "main", "index": 0 } ],
+        []
+      ]
+    },
+    "Set Campos": {
+      "main": [[ { "node": "Sheets Buscar Usuario", "type": "main", "index": 0 } ]]
+    },
+    "Sheets Buscar Usuario": {
+      "main": [[ { "node": "Logica del Bot", "type": "main", "index": 0 } ]]
+    },
+    "Logica del Bot": {
+      "main": [[ { "node": "Enviar Respuesta WhatsApp", "type": "main", "index": 0 } ]]
+    },
+    "Enviar Respuesta WhatsApp": {
+      "main": [[ { "node": "Sheets Actualizar Estado", "type": "main", "index": 0 } ]]
+    },
+    "Sheets Actualizar Estado": {
+      "main": [[ { "node": "Notificar Empleado?", "type": "main", "index": 0 } ]]
+    },
+    "Notificar Empleado?": {
+      "main": [
+        [ { "node": "Avisar al Empleado", "type": "main", "index": 0 } ],
+        []
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}
